@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 import logging
 
-
-TOKEN = 'lol no'
+# ijomaa's token 
+TOKEN = 'NTg2MjIyOTkwMTkxMDk5OTA1.XtBAKg.NOONtRmuhlWusANN5wWGYX9wflc'
 
 
 def logs():
@@ -24,24 +24,24 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):
-    print('Message from {0.author}: {0.content}'.format(message))
-    if message.author == client.user:
+async def on_message(messagefff):
+    print('Message from {0.author}: {0.content}'.format(messagefff))
+    if messagefff.author == client.user:
         return
 
-    if message.content.lower().startswith(f'hello'):
-        await message.channel.send('Hello!')
+    if messagefff.content.lower().startswith(f'hello'):
+        await messagefff.channel.send('Hello!')
 
-    if message.content.lower().startswith(f'greater good'):
-        await message.channel.send('The higher order shall reign.')
+    if messagefff.content.lower().startswith(f'greater good'):
+        await messagefff.channel.send('The higher order shall reign.')
 
-    if message.content.lower().startswith(f'e'):
-        await message.channel.send('e')
+    if messagefff.content.lower().startswith(f'e'):
+        await messagefff.channel.send('e')
 
-    if message.content.lower().startswith(f'h'):
-        await message.channel.send('h')
+    if messagefff.content.lower().startswith(f'h'):
+        await messagefff.channel.send('h')
 
-    await client.process_commands(message)
+    await client.process_commands(messagefff)
 
 
 @client.command()
@@ -62,7 +62,7 @@ async def gay(ctx, member: discord.Member):
 @client.command()
 async def mf(message):
     #id = 332456386946531328
-    id = 263253261094486016
+    id = 420284927205048321
     if message.author == client.get_user(id):
         await message.channel.send(f'You are mom')
 
@@ -71,10 +71,41 @@ async def mf(message):
 
 @client.command()
 async def test(ctx, *, question):
-    host_lounge = [channel id]
+    channel_id = 715723956455342141 # bot-test1 channel
+
+    host_lounge = channel_id
     ans = question
     channel = client.get_channel(host_lounge)
     await channel.send(ans)
+
+
+@client.command()
+async def test2(ctx):
+# host_lounge = 654362714638123040
+    channel_id = 715723956455342141 # bot-test1 channel
+
+    host_lounge = channel_id
+    ans = question
+    channel = client.get_channel(host_lounge)
+
+    channel = ctx.channel
+    await channel.send(ans)
+
+# @client.command()
+# async def search(message):
+#   print('h from {@.author}: {@.content}'.format(message))
+#   msg = '{@.author}: {@.content}'.format(message)
+#   hostlounge = 654362714638123040
+#   channel = client.get_channel(hostlounge)
+#   await channel.send(msg)
+
+@client.command()
+async def search(ctx):
+  print('h from {0.author}: {0.message.content}'.format(ctx))
+  msg = '{0.author}: {0.message.content}'.format(ctx)
+  hostlounge = 715723956455342141
+  channel = client.get_channel(hostlounge)
+  await channel.send(msg)
 
 
 logs()
