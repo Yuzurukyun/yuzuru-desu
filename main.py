@@ -26,31 +26,33 @@ TOKEN = os.getenv('DISCORD_TOKEN') # get discord token environment variable
 # Dictionary for the list of User IDs.
 # ids are required since a user may change their name
 USER_IDS = {
-    'Yuzuru'    :   332456386946531328,
-    'Servant'   :   173404147901661184,
-    'Negative'  :   624214764226084884,
-    'Mobel'     :   309650909741318154,
-    'Noire'     :   263253261094486016,
-    'Shaw'      :   243311861183807488,
-    'Jay'       :   210143294972231681,
+    '[Yuzuru]'    :   332456386946531328,
+    '[Servant]'   :   173404147901661184,
+    '[Negative]'  :   624214764226084884,
+    '[Mobel]'     :   309650909741318154,
+    '[Noire]'     :   263253261094486016,
+    '[Shaw]'      :   243311861183807488,
+    '[Jay]'       :   210143294972231681,
 
-    'Jovial'    :   268074911619219456,
+    '[Jovial]'    :   268074911619219456,
 
-    'Perkorn'   :   217276956469755904,
-    'Jeremy'    :   293473817932726272,
-    'Twice'     :   194385555125960705,
-    'Nookuon'   :   218372116893007872,
-    'Lillie'    :   692429269321777222,
-    'Arko'      :   135769169600839681,
-    'Coffee'    :   331783104236617728,
-    'Cam'       :   325379295549587467,
-    'Zocobo'    :   366255501035569154,
-    'Clopel'    :   327506772422164480,
-    'Riam'      :   363795030365700097,
-    'Skrubby'   :   212241751383998477,
-    'DC'        :   492590612969816095,
-    'Lyn'       :   276101884555821057,
-    'Megumin'   :   177100361729966082
+    '[Perkorn]'   :   217276956469755904,
+    '[Jeremy]'    :   293473817932726272,
+    '[Twice]'     :   194385555125960705,
+    '[Nookuon]'   :   218372116893007872,
+    '[Lillie]'    :   692429269321777222,
+    '[Arko]'      :   135769169600839681,
+    '[Coffee]'    :   331783104236617728,
+    '[Cam]'       :   325379295549587467,
+    '[Zocobo]'    :   366255501035569154,
+    '[Clopel]'    :   327506772422164480,
+    '[Riam]'      :   363795030365700097,
+    '[Skrubby]'   :   212241751383998477,
+    '[DC]'        :   492590612969816095,
+    '[Lyn]'       :   276101884555821057,
+    '[Megumin]'   :   177100361729966082,
+
+    '[_F]'        :   420284927205048321
 }
 
 # Dictionary for the list of Discord Channels.
@@ -196,8 +198,6 @@ async def profile(message):
     if message.author == client.get_user(USER_IDS[Yuzuru]):
         await message.channel.send(str(Yuzuru))
 
-
-
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
 async def search(ctx):
     """
@@ -211,21 +211,18 @@ async def search(ctx):
 
     is_channel_char_found = False
 
-    # send user's message to correct channel based on the channel character in
-    # their message
+    # send user's message to correct channel based on the channel character
     for channel_char in DISCORD_CHANNELS.keys():
-        if ((channel_char in ctx.message.content.lower())
+        if ((channel_char.lower() in ctx.message.content.lower())
                 and (not is_channel_char_found)):
 
             # get channel id based on channel name, using the channel character
-            # obtained
             channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
 
             await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
             await channel.send(msg)
 
-            # if user's message has more than 1 channel character, only process
-            # the first characer found
+            # only process the first channel character found
             is_channel_char_found = True
 
 
@@ -240,28 +237,28 @@ async def reply(ctx):
     # log message
     msg = '**{0.author}**: {0.message.content}'.format(ctx)
 
+    is_username_found = False
 
-    # if '[jay]' in ctx.message.content.lower():
-    #     msg = '**{0.author}**: {0.message.content}'.format(ctx)
-    #     pid = client.get_user(User_IDs['Jay'])
-    #     await ctx.send(":warning: **Message was sent!** :warning:")
-    #     await pid.send(msg)
+    # send a message to the user matching the username
+    for username in USER_IDS.keys():
+        if ((username.lower() in ctx.message.content.lower())
+                and (not is_username_found)):
 
-    if '[jay]' in ctx.message.content.lower():
-        
-        pid = client.get_user(USER_IDS['Jay'])
-        await ctx.send(":warning: **Message was sent!** :warning:")
-        await pid.send(msg)
+            # get user id based on username
+            pid = client.get_user(USER_IDS[username])
 
-    elif '[cringe]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        pid = client.get_channel(DISCORD_CHANNELS['Cringe'])
-        await ctx.send(":warning: **Message was sent!** :warning:")
-        await pid.send(msg)
+            await ctx.send(":warning: **Message was sent!** :warning:")
+            await pid.send(msg)
+
+            # only process the first username found
+            is_username_found = True
 
 @client.command()
 async def test2(ctx):
     pid = discord.utils.get(client.get_all_members(), name='_F')
+    pid = client.get_user(USER_IDS['[_F]'])
+    username = list(USER_IDS.keys())[0]
+    print(username.lower() in ctx.message.content.lower())
     await pid.send("Hi this works!")
     
 # Runs the log program.
