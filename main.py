@@ -1,9 +1,26 @@
+# import standard python libraries
+import os
+import logging
+from dotenv import load_dotenv
+
+# import custom classes
+
+# import third party libraries
 import discord
 from discord.ext import commands
-import logging
 
-# Discord Token; self-explanatory.
-TOKEN = 'e'
+# The .gitignore file will not upload the .env file, keeping the discord token
+# safe. Create the .env file as follows:
+'''
+File path:
+yuzuru-desu/.env
+
+Inside .env file:
+DISCORD_TOKEN=<your token>
+'''
+
+load_dotenv() # export environment variables in .env file
+TOKEN = os.getenv('DISCORD_TOKEN') # Discord Token; self-explanatory
 
 # Dictionary for the list of User IDs.
 User_IDs = {
