@@ -29,19 +29,32 @@ load_dotenv() # export environment variables in .env file
 # TOKEN = os.getenv('DISCORD_TOKEN_IJOMAA')
 TOKEN = os.getenv('DISCORD_TOKEN_YUZURU')
 
-# Dictionary for the list of User IDs.
-# ids are required since a user may change their name
-USER_IDS = {
+# Dictionary for the list of Discord Channels.
+# <channel character> : <channel name>
+DISCORD_CHANNELS = {
+    '[a]' : 'section-a',
+    '[b]' : 'section-b',
+    '[c]' : 'section-c',
+    '[d]' : 'section-d',
+    '[e]' : 'section-e',
+    '[i]' : 'all-intersections'
+}
+RETARD_CHANNEL = 'retard-messages'
+
+# GM IDs who GMs the roleplay.
+GM_IDS = {
     '[Yuzuru]'    :   332456386946531328,
     '[Servant]'   :   173404147901661184,
     '[Negative]'  :   624214764226084884,
     '[Mobel]'     :   309650909741318154,
     '[Noire]'     :   263253261094486016,
     '[Shaw]'      :   243311861183807488,
-    '[Jay]'       :   210143294972231681,
 
-    '[Jovial]'    :   268074911619219456,
+    '[_F]'        :   420284927205048321, # need to give them high access to debug bot commands
+}
 
+# Participant IDs who participated in the roleplay.
+PARTICIPANT_IDS = {
     '[Perkorn]'   :   217276956469755904,
     '[Jeremy]'    :   293473817932726272,
     '[Twice]'     :   194385555125960705,
@@ -57,30 +70,19 @@ USER_IDS = {
     '[DC]'        :   492590612969816095,
     '[Lyn]'       :   276101884555821057,
     '[Megumin]'   :   177100361729966082,
-
-    '[_F]'        :   420284927205048321
 }
 
-# Dictionary for the list of Discord Channels.
-# <channel character> : <channel name>
-DISCORD_CHANNELS = {
-    '[a]' : 'section-a',
-    '[b]' : 'section-b',
-    '[c]' : 'section-c',
-    '[d]' : 'section-d',
-    '[e]' : 'section-e',
-    '[i]' : 'all-intersections'
+# other people to add to use the bot
+OTHER_IDS = {
+    '[Jay]'       :   210143294972231681,
+    '[Jovial]'    :   268074911619219456,
 }
-RETARD_CHANNEL = 'retard-messages'
 
-# GM IDs who GMs the roleplay.
-GM_IDs = [332456386946531328, 173404147901661184, 624214764226084884,
-          309650909741318154, 263253261094486016, 243311861183807488]
-
-# Participant IDs who participated in the roleplay.
-Participant_IDs = [217276956469755904, 293473817932726272, 194385555125960705, 218372116893007872, 692429269321777222,
-                   331783104236617728, 325379295549587467, 366255501035569154, 327506772422164480, 363795030365700097,
-                   212241751383998477, 492590612969816095, 276101884555821057, 177100361729966082]
+# Dictionary for the list of all User IDs in the roleplay. Ids are required since a user may change their name.
+USER_IDS = dict()
+USER_IDS.update(GM_IDS)
+USER_IDS.update(PARTICIPANT_IDS)
+USER_IDS.update(OTHER_IDS)
 
 # Prints out logs as discord.log.
 def logs():
@@ -94,9 +96,13 @@ def logs():
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
 
 
-# Class for the Characters. My peeve for this is that I don't know how to take a single element and use it outside of the __str__.
-# I just couldn't due to my incompetence and tackling tougher subjects without learning the basics.
+
 class Characters:
+    """
+        Class for the Characters. My peeve for this is that I don't know how to take a single element and use it
+        outside of the __str__. I just couldn't due to my incompetence and tackling tougher subjects without
+        learning the basics.
+    """
     def __init__(self, name, reside, moneys, doc):
         self.name = name
         self.doc = doc
@@ -117,7 +123,8 @@ Yuzuru = Characters('We are no strangers to love', 'You know the rules, so do I.
 @client.event
 async def on_ready():
     print('logged on as {0}!'.format(client.user))
-    return await client.change_presence(activity=discord.Activity(type=1, name='"yu!help" for commands', url='https://twitch.tv/twitch'))
+    return await client.change_presence(
+        activity=discord.Activity(type=1, name='"yu!help" for commands', url='https://twitch.tv/twitch'))
 
 
 # The Error Catcher event.
@@ -136,7 +143,7 @@ async def on_command_error(ctx, error):
 async def on_message(message):
     # This prints all logs to the console for security reasons.
     print('Message from {0.author}: {0.content}'.format(message))
-    channel = client.get_channel(715992199329742948)
+    channel = utils.get(client.get_all_channels(), name='the-bot')
 
     # Don't do anything if the bot sent the message. Prevents recursive loops.
     if message.author == client.user:
@@ -145,7 +152,7 @@ async def on_message(message):
     # This receives the messages from the Bot's DMs and send them directly to
     # the Discord Channel. We also make sure that the bot didn't send the
     # message, to prevent recursive loops.
-    if message.guild is None and message.author != client.user:
+    if message.guild is None and message.author != client.user: # for debugging message that is received by bot
         msg = '**{0.author}**: {0.content}'.format(message)
         await channel.send(msg)
 
@@ -205,35 +212,46 @@ async def profile(message):
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
 async def search(ctx):
     """
-       This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this less
-       cancer like. The idea is that people will DM the bot and the information will be sent to the Discord Channels where
-       every GM can see and access the players inquiries. Though, the code works, it's just ugly. This uses the Dictionary.
+        This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this
+        less cancer like. The idea is that people will DM the bot and the information will be sent to the Discord
+        Channels where every GM can see and access the players inquiries. Though, the code works, it's just ugly.
+        This uses the Dictionary.
     """
 
     # log message
     msg = '**{0.author}**: {0.message.content}'.format(ctx)
 
-    is_channel_char_found = False
+    # Search query must be sent in DM's. GM's are an exception.
+    if ((ctx.guild is None)
+            or (ctx.author.id in GM_IDS.values())):
 
-    # send user's message to correct channel based on the channel character
-    for channel_char in DISCORD_CHANNELS.keys():
-        if ((channel_char.lower() in ctx.message.content.lower())
-                and (not is_channel_char_found)):
+        is_channel_char_found = False
 
-            # get channel id based on channel name, using the channel character
-            channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
+        # send user's message to correct channel based on the channel character
+        for channel_char in DISCORD_CHANNELS.keys():
+            if ((channel_char.lower() in ctx.message.content.lower())
+                    and (not is_channel_char_found)):
 
-            await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
+                # get channel id based on channel name, using the channel character
+                channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
+
+                await ctx.send(
+                    ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
+                await channel.send(msg)
+
+                # only process the first channel character found
+                is_channel_char_found = True
+
+        # send message to retard-messages channel
+        if (not is_channel_char_found):
+            channel = utils.get(client.get_all_channels(), name=RETARD_CHANNEL)
+            await ctx.send(
+                ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
             await channel.send(msg)
 
-            # only process the first channel character found
-            is_channel_char_found = True
-
-    # send message to retard-messages channel
-    if (not is_channel_char_found):
-        channel = utils.get(client.get_all_channels(), name=RETARD_CHANNEL)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+    else:
+        await ctx.send(
+            ":no_entry: **You are not allowed to message your search query publicly. Send a DM instead.** :no_entry:")
 
 @client.command(aliases=['r', 'rpy', 'rep'])
 async def reply(ctx):
