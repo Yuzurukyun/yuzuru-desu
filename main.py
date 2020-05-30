@@ -18,10 +18,16 @@ yuzuru-desu/.env
 
 Inside .env file:
 DISCORD_TOKEN=<your token>
+
+e.g.
+DISCORD_TOKEN_YUZURU=<your token>
 '''
 
 load_dotenv() # export environment variables in .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # get discord token environment variable
+
+# get discord token environment variable
+# TOKEN = os.getenv('DISCORD_TOKEN_IJOMAA')
+TOKEN = os.getenv('DISCORD_TOKEN_YUZURU')
 
 # Dictionary for the list of User IDs.
 # ids are required since a user may change their name
@@ -63,9 +69,9 @@ DISCORD_CHANNELS = {
     '[c]' : 'section-c',
     '[d]' : 'section-d',
     '[e]' : 'section-e',
-    '[i]' : 'all-intersections',
-    '[z]' : 'retard-messages'
+    '[i]' : 'all-intersections'
 }
+RETARD_CHANNEL = 'retard-messages'
 
 # GM IDs who GMs the roleplay.
 GM_IDs = [332456386946531328, 173404147901661184, 624214764226084884,
@@ -76,7 +82,6 @@ Participant_IDs = [217276956469755904, 293473817932726272, 194385555125960705, 2
                    331783104236617728, 325379295549587467, 366255501035569154, 327506772422164480, 363795030365700097,
                    212241751383998477, 492590612969816095, 276101884555821057, 177100361729966082]
 
-
 # Prints out logs as discord.log.
 def logs():
     logger = logging.getLogger('discord')
@@ -84,7 +89,6 @@ def logs():
     handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
-
 
 # The command bot command.
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
@@ -225,6 +229,11 @@ async def search(ctx):
             # only process the first channel character found
             is_channel_char_found = True
 
+    # send message to retard-messages channel
+    if (not is_channel_char_found):
+        channel = utils.get(client.get_all_channels(), name=RETARD_CHANNEL)
+        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
+        await channel.send(msg)
 
 @client.command(aliases=['r', 'rpy', 'rep'])
 async def reply(ctx):
