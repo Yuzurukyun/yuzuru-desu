@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 # import third party libraries
 import discord
 from discord.ext import commands
+from discord import utils
 
 # The .gitignore file will not upload the .env file, keeping the discord token
 # safe. Create the .env file as follows:
@@ -20,10 +21,11 @@ DISCORD_TOKEN=<your token>
 '''
 
 load_dotenv() # export environment variables in .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # Discord Token; self-explanatory
+TOKEN = os.getenv('DISCORD_TOKEN') # get discord token environment variable
 
 # Dictionary for the list of User IDs.
-User_IDs = {
+# ids are required since a user may change their name
+USER_IDS = {
     'Yuzuru'    :   332456386946531328,
     'Servant'   :   173404147901661184,
     'Negative'  :   624214764226084884,
@@ -52,14 +54,15 @@ User_IDs = {
 }
 
 # Dictionary for the list of Discord Channels.
-Discord_Channels = {
-    'Section_A'       :   715914092203737128,
-    'Section_B'       :   715914337012940804,
-    'Section_C'       :   715914353273995365,
-    'Section_D'       :   715914366847025283,
-    'Section_E'       :   715914378771431454,
-    'Intersections'   :   715914424673763369,
-    'Cringe'          :   715951589566971974
+# <channel character> : <channel name>
+DISCORD_CHANNELS = {
+    '[a]' : 'section-a',
+    '[b]' : 'section-b',
+    '[c]' : 'section-c',
+    '[d]' : 'section-d',
+    '[e]' : 'section-e',
+    '[i]' : 'all-intersections',
+    '[z]' : 'retard-messages'
 }
 
 # GM IDs who GMs the roleplay.
@@ -129,11 +132,13 @@ async def on_message(message):
     print('Message from {0.author}: {0.content}'.format(message))
     channel = client.get_channel(715992199329742948)
 
-    # I don't even know what this does.
+    # Don't do anything if the bot sent the message. Prevents recursive loops.
     if message.author == client.user:
         return
 
-    # This receives the messages from the Bot's DMs and send them directly to the Discord Channel.
+    # This receives the messages from the Bot's DMs and send them directly to
+    # the Discord Channel. We also make sure that the bot didn't send the
+    # message, to prevent recursive loops.
     if message.guild is None and message.author != client.user:
         msg = '**{0.author}**: {0.content}'.format(message)
         await channel.send(msg)
@@ -188,78 +193,77 @@ async def mf(message):
 # The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
 @client.command(aliases=['pf', 'profiles', 'p'])
 async def profile(message):
-    if message.author == client.get_user(User_IDs[Yuzuru]):
+    if message.author == client.get_user(USER_IDS[Yuzuru]):
         await message.channel.send(str(Yuzuru))
 
 
-# This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this less
-# cancer like. The idea is that people will DM the bot and the information will be sent to the Discord Channels where
-# every GM can see and access the players inquiries. Though, the code works, it's just ugly. This uses the Dictionary.
+
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
 async def search(ctx):
+    """
+       This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this less
+       cancer like. The idea is that people will DM the bot and the information will be sent to the Discord Channels where
+       every GM can see and access the players inquiries. Though, the code works, it's just ugly. This uses the Dictionary.
+    """
 
-    if '[a]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Section_A)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+    # log message
+    msg = '**{0.author}**: {0.message.content}'.format(ctx)
 
-    elif '[b]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Section_B)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+    is_channel_char_found = False
 
-    elif '[c]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Section_C)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+    # send user's message to correct channel based on the channel character in
+    # their message
+    for channel_char in DISCORD_CHANNELS.keys():
+        if ((channel_char in ctx.message.content.lower())
+                and (not is_channel_char_found)):
 
-    elif '[d]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Section_D)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+            # get channel id based on channel name, using the channel character
+            # obtained
+            channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
 
-    elif '[e]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Section_E)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
+            await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
+            await channel.send(msg)
 
-    elif '[i]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Intersections)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-        await channel.send(msg)
-
-    else:
-        msg = '{0.author}: {0.message.content}'.format(ctx)
-        channel = client.get_channel(Cringe)
-        await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment... \nAlso, you have not stated an area, so please do so.**")
-        await channel.send(msg)
+            # if user's message has more than 1 channel character, only process
+            # the first characer found
+            is_channel_char_found = True
 
 
-# This is unfinished, as you may have guessed. This code has the same issue as the above and I have no idea how to
-# fix it. The idea is that the GMs will be able to send messages to players on the spot. This uses the dictionary.
-# Also, this poses an issue as, if I were to do 'y!r [Jay] {Message}', the 'y!r [Jay]' is included and it's ugly.
 @client.command(aliases=['r', 'rpy', 'rep'])
 async def reply(ctx):
+    """
+    This is unfinished, as you may have guessed. This code has the same issue as the above and I have no idea how to
+    fix it. The idea is that the GMs will be able to send messages to players on the spot. This uses the dictionary.
+    Also, this poses an issue as, if I were to do 'y!r [Jay] {Message}', the 'y!r [Jay]' is included and it's ugly.
+    """
+
+    # log message
+    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+
+
+    # if '[jay]' in ctx.message.content.lower():
+    #     msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    #     pid = client.get_user(User_IDs['Jay'])
+    #     await ctx.send(":warning: **Message was sent!** :warning:")
+    #     await pid.send(msg)
 
     if '[jay]' in ctx.message.content.lower():
-        msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        pid = client.get_user(User_IDs['Jay'])
+        
+        pid = client.get_user(USER_IDS['Jay'])
         await ctx.send(":warning: **Message was sent!** :warning:")
         await pid.send(msg)
 
     elif '[cringe]' in ctx.message.content.lower():
         msg = '**{0.author}**: {0.message.content}'.format(ctx)
-        pid = client.get_channel(Discord_Channels['Cringe'])
+        pid = client.get_channel(DISCORD_CHANNELS['Cringe'])
         await ctx.send(":warning: **Message was sent!** :warning:")
         await pid.send(msg)
 
-
+@client.command()
+async def test2(ctx):
+    pid = discord.utils.get(client.get_all_members(), name='_F')
+    await pid.send("Hi this works!")
+    
 # Runs the log program.
 logs()
 
