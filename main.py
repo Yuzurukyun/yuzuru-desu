@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 # import third party libraries
 import discord
-from discord.ext import commands
 from discord import utils
+from discord.ext import commands
 
 # The .gitignore file will not upload the .env file, keeping the discord token
 # safe. Create the .env file as follows:
@@ -43,7 +43,7 @@ RETARD_CHANNEL = 'retard-messages'
 
 # GM IDs who GMs the roleplay.
 GM_IDS = {
-    '[Yuzuru]'    :   332456386946531328,
+    '[Yuzuru]': 332456386946531328,
     '[Servant]'   :   173404147901661184,
     '[Negative]'  :   624214764226084884,
     '[Mobel]'     :   309650909741318154,
@@ -94,8 +94,6 @@ def logs():
 
 # The command bot command.
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
-
-
 
 class Characters:
     """
@@ -222,8 +220,11 @@ async def search(ctx):
     msg = '**{0.author}**: {0.message.content}'.format(ctx)
 
     # Search query must be sent in DM's. GM's are an exception.
+    # if ((ctx.guild is None)
+    #         or (ctx.author.id in GM_IDS.values())):
+
     if ((ctx.guild is None)
-            or (ctx.author.id in GM_IDS.values())):
+            or (is_gm(ctx))):
 
         is_channel_char_found = False
 
@@ -253,40 +254,41 @@ async def search(ctx):
         await ctx.send(
             ":no_entry: **You are not allowed to message your search query publicly. Send a DM instead.** :no_entry:")
 
+# check if user is a GM for the rp
+def is_gm(ctx):
+    is_user_gm = ctx.author.id in GM_IDS.values()
+    return is_user_gm
+
 @client.command(aliases=['r', 'rpy', 'rep'])
-async def reply(ctx):
+@commands.check(is_gm)
+async def reply(ctx, *args): # pass all arguments as a list
     """
     This is unfinished, as you may have guessed. This code has the same issue as the above and I have no idea how to
     fix it. The idea is that the GMs will be able to send messages to players on the spot. This uses the dictionary.
     Also, this poses an issue as, if I were to do 'y!r [Jay] {Message}', the 'y!r [Jay]' is included and it's ugly.
     """
 
-    # log message
-    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
+    message_to_user = '**{0.author}**: {1}'.format(ctx, args[1]) # skip 1st argument (bot command) of original message
 
-    is_username_found = False
+    user_target = args[0] # get username character identifier to send message to
 
-    # send a message to the user matching the username
-    for username in USER_IDS.keys():
-        if ((username.lower() in ctx.message.content.lower())
-                and (not is_username_found)):
-
-            # get user id based on username
-            pid = client.get_user(USER_IDS[username])
+    # send a message to the target user if they are in the rp
+    for user in USER_IDS.keys():
+        if (user.lower() in user_target.lower()):
+            pid = client.get_user(USER_IDS[user]) # get target user's id based on username
 
             await ctx.send(":warning: **Message was sent!** :warning:")
-            await pid.send(msg)
-
-            # only process the first username found
-            is_username_found = True
+            await pid.send(message_to_user)
+            break # only process 1 user
 
 @client.command()
 async def test2(ctx):
-    pid = discord.utils.get(client.get_all_members(), name='_F')
-    pid = client.get_user(USER_IDS['[_F]'])
-    username = list(USER_IDS.keys())[0]
-    print(username.lower() in ctx.message.content.lower())
-    await pid.send("Hi this works!")
+    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg2 = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg3 = ctx.message.content[ctx.message.content.find(' '):]
+    await ctx.send(msg3)
+    await ctx.send("f")
     
 # Runs the log program.
 logs()
