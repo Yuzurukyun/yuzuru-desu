@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 # import third party libraries
 import discord
-from discord.ext import commands
 from discord import utils
+from discord.ext import commands
 
 # The .gitignore file will not upload the .env file, keeping the discord token
 # safe. Create the .env file as follows:
@@ -18,24 +18,43 @@ yuzuru-desu/.env
 
 Inside .env file:
 DISCORD_TOKEN=<your token>
+
+e.g.
+DISCORD_TOKEN_YUZURU=<your token>
 '''
 
 load_dotenv() # export environment variables in .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # get discord token environment variable
 
-# Dictionary for the list of User IDs.
-# ids are required since a user may change their name
-USER_IDS = {
-    '[Yuzuru]'    :   332456386946531328,
+# get discord token environment variable
+# TOKEN = os.getenv('DISCORD_TOKEN_IJOMAA')
+TOKEN = os.getenv('DISCORD_TOKEN_YUZURU')
+
+# Dictionary for the list of Discord Channels.
+# <channel character> : <channel name>
+DISCORD_CHANNELS = {
+    '[a]' : 'section-a',
+    '[b]' : 'section-b',
+    '[c]' : 'section-c',
+    '[d]' : 'section-d',
+    '[e]' : 'section-e',
+    '[i]' : 'all-intersections'
+}
+RETARD_CHANNEL = 'retard-messages'
+
+# GM IDs who GMs the roleplay.
+GM_IDS = {
+    '[Yuzuru]'    : 332456386946531328,
     '[Servant]'   :   173404147901661184,
     '[Negative]'  :   624214764226084884,
     '[Mobel]'     :   309650909741318154,
     '[Noire]'     :   263253261094486016,
     '[Shaw]'      :   243311861183807488,
-    '[Jay]'       :   210143294972231681,
 
-    '[Jovial]'    :   268074911619219456,
+    '[_F]'        :   420284927205048321, # need to give them high access to debug bot commands
+}
 
+# Participant IDs who participated in the roleplay.
+PARTICIPANT_IDS = {
     '[Perkorn]'   :   217276956469755904,
     '[Jeremy]'    :   293473817932726272,
     '[Twice]'     :   194385555125960705,
@@ -51,31 +70,19 @@ USER_IDS = {
     '[DC]'        :   492590612969816095,
     '[Lyn]'       :   276101884555821057,
     '[Megumin]'   :   177100361729966082,
-
-    '[_F]'        :   420284927205048321
 }
 
-# Dictionary for the list of Discord Channels.
-# <channel character> : <channel name>
-DISCORD_CHANNELS = {
-    '[a]' : 'section-a',
-    '[b]' : 'section-b',
-    '[c]' : 'section-c',
-    '[d]' : 'section-d',
-    '[e]' : 'section-e',
-    '[i]' : 'all-intersections',
-    '[z]' : 'retard-messages'
+# other people to add to use the bot
+OTHER_IDS = {
+    '[Jay]'       :   210143294972231681,
+    '[Jovial]'    :   268074911619219456,
 }
 
-# GM IDs who GMs the roleplay.
-GM_IDs = [332456386946531328, 173404147901661184, 624214764226084884,
-          309650909741318154, 263253261094486016, 243311861183807488]
-
-# Participant IDs who participated in the roleplay.
-Participant_IDs = [217276956469755904, 293473817932726272, 194385555125960705, 218372116893007872, 692429269321777222,
-                   331783104236617728, 325379295549587467, 366255501035569154, 327506772422164480, 363795030365700097,
-                   212241751383998477, 492590612969816095, 276101884555821057, 177100361729966082]
-
+# Dictionary for the list of all User IDs in the roleplay. Ids are required since a user may change their name.
+USER_IDS = dict()
+USER_IDS.update(GM_IDS)
+USER_IDS.update(PARTICIPANT_IDS)
+USER_IDS.update(OTHER_IDS)
 
 # Prints out logs as discord.log.
 def logs():
@@ -85,38 +92,257 @@ def logs():
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
 
-
 # The command bot command.
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
 
+class Character: # class name should be singular
+    """
+        Class for the Characters. My peeve for this is that I don't know how to take a single element and use it
+        outside of the __str__. I just couldn't due to my incompetence and tackling tougher subjects without
+        learning the basics.
+    """
 
-# Class for the Characters. My peeve for this is that I don't know how to take a single element and use it outside of the __str__.
-# I just couldn't due to my incompetence and tackling tougher subjects without learning the basics.
-class Characters:
-    def __init__(self, name, reside, moneys, doc):
+    def __init__(self, name, reside, money, doc):
         self.name = name
-        self.doc = doc
-        self.moneys = moneys
         self.reside = reside
+        self.money = money
+        self.doc = doc
 
     def __str__(self):
-        return '`Name:` **{self.name}** \n`Reside in:` **{self.reside}** `\n`Money:` You have **{self.moneys}¥**' \
+        return '`Name:` **{self.name}** \n`Resides in:` **{self.reside}** \n`Money:` You have **{self.money}¥**' \
                ' \n`Document:` {self.doc}'.format(self=self)
 
+CHARACTER_DATA = {
+    '[Perkorn]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Jeremy]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Twice]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Nookuon]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Lillie]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Arko]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Coffee]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Cam]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Zocobo]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Clopel]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Riam]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Skrubby]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[DC]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Lyn]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Megumin]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
 
-# Character Data (name, doc, money)
-Yuzuru = Characters('We are no strangers to love', 'You know the rules, so do I.',
-                    'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1000)
+    # need to give them high access to debug bot commands
+    '[_F]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Yuzuru]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    )
+}
+
+# check if user is a GM for the rp
+def is_gm(ctx):
+    is_user_gm = ctx.author.id in GM_IDS.values()
+    return is_user_gm
+
+# This is a test command for a bigger command later on -- profiles. Look below for it.
+@client.command()
+async def mf(message):
+    # id = 332456386946531328
+    id = 263253261094486016
+    if message.author == client.get_user(id):
+        await message.channel.send(f'You are mom')
+
+@client.command(aliases=['b', 'bk'])
+@commands.check(is_gm)
+async def bank(ctx, user_target, amount: int):
+    """
+        Modify bank account of an RP participant.
+
+        Restrictions: GM's only.
+        Users:
+            Participant:
+                [Perkorn]
+                [Jeremy]
+                [Twice]
+                [Nookuon]
+                [Lillie]
+                [Arko]
+                [Coffee]
+                [Cam]
+                [Zocobo]
+                [Clopel]
+                [Riam]
+                [Skrubby]
+                [DC]
+                [Lyn]
+                [Megumin]
+        Usages: y!bank <user> <amount>
+        Examples:
+            y!bank [Coffee] -10000
+            y!bank [Perkorn] 999999
+        Aliases: b, bk
+    """
+    is_user_target_found = False
+
+    for user in CHARACTER_DATA.keys():
+        if (is_user_target_found): # only process 1 user
+            break
+
+        elif ((user.lower() in user_target.lower())
+              and (not is_user_target_found)):
+
+            orig_amount = CHARACTER_DATA[user].money # money in user's bank account before the transaction
+            CHARACTER_DATA[user].money += amount # update user's bank account
+
+            pid = client.get_user(USER_IDS[user]) # get target user's id based on username
+            # notify user of bank transaction
+            await pid.send(
+                ":warning: **Bank account updated from {0}¥ to {1}¥** :warning: \n> Authorized by {2.author}".format(
+                    orig_amount, CHARACTER_DATA[user].money, ctx))
+
+            # notify the GM that the bank account has been updated
+            await ctx.send(
+                ":warning: **Updated {0} bank account from {1}¥ to {2}¥** :warning:".format(
+                    pid, orig_amount, CHARACTER_DATA[user].money))
+
+            is_user_target_found = True
+
+    if (not is_user_target_found):
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid participant user for current RP.".format(user_target))
+
+# The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
+@client.command(aliases=['p', 'pf', 'profiles'])
+async def profile(ctx):
+    """
+        Show your character profile in the RP.
+
+        Use force command to show profile in public.
+
+        Restrictions: Bot must be DM'd.
+        Usages: y!profile <force>
+        Examples:
+            y!profile
+            y!profile force
+        Aliases: p, pf, profiles
+    """
+
+    force_cmd = "force" # keyword to force displaying someone's profile when not in a DM
+
+    # Command only works if message was a DM. Use the force keyword to bypass the restriction.
+    if ((ctx.guild is None)
+            or (force_cmd in ctx.message.content.lower())):
+
+        is_user_found = False
+
+        # show user's profile based on their user id
+        for user in USER_IDS.keys():
+            if (ctx.author.id == USER_IDS[user]):
+                await ctx.send(CHARACTER_DATA[user])
+                is_user_found = True
+
+        if (not is_user_found):
+            await ctx.send(
+                ":no_entry: **ERROR** :no_entry: \n> __{0.author}__ invalid user for current RP.".format(ctx))
+
+    else:
+        await ctx.send(":warning: **To reveal your profile publicly, add `force` to the command.** :warning:\n"
+                       + "> DM to see your profile.")
 
 
 # The On_Ready event.
 @client.event
 async def on_ready():
     print('logged on as {0}!'.format(client.user))
-    return await client.change_presence(activity=discord.Activity(type=1, name='"yu!help" for commands', url='https://twitch.tv/twitch'))
+    return await client.change_presence(
+        activity=discord.Activity(type=1, name='"yu!help" for commands', url='https://twitch.tv/twitch'))
 
 
 # The Error Catcher event.
+"""
+    So I just noticed that you did this. So, yeah, I probably should have looked into this a bit more and put
+    more error checking here. You can do that though.
+"""
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -126,13 +352,16 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('**Please input a valid argument.** `e.g. yu!search [argument]`')
 
+    if isinstance(error, commands.BadArgument):
+        await ctx.send('**Please input a valid argument.** `e.g. yu!search [argument]`')
+
 
 # These events occur whenever you type a message.
 @client.event
 async def on_message(message):
     # This prints all logs to the console for security reasons.
     print('Message from {0.author}: {0.content}'.format(message))
-    channel = client.get_channel(715992199329742948)
+    channel = utils.get(client.get_all_channels(), name='the-bot')
 
     # Don't do anything if the bot sent the message. Prevents recursive loops.
     if message.author == client.user:
@@ -141,7 +370,7 @@ async def on_message(message):
     # This receives the messages from the Bot's DMs and send them directly to
     # the Discord Channel. We also make sure that the bot didn't send the
     # message, to prevent recursive loops.
-    if message.guild is None and message.author != client.user:
+    if message.guild is None and message.author != client.user: # for debugging message that is received by bot
         msg = '**{0.author}**: {0.content}'.format(message)
         await channel.send(msg)
 
@@ -180,86 +409,204 @@ async def servant(ctx):
 # Gay double ping time.
 @client.command()
 async def gay(ctx, member: discord.Member):
+    """
+    Mention someone to declared them gay.
+
+    Usages: y!gay <member>
+    Examples: y!gay @Yuzuru Nishimiya#3327
+    """
     await ctx.send(f"{member.mention} is gay lol!!!")
 
-
-# This is a test command for a bigger command later on -- profiles. Look below for it.
-@client.command()
-async def mf(message):
-    # id = 332456386946531328
-    id = 263253261094486016
-    if message.author == client.get_user(id):
-        await message.channel.send(f'You are mom')
-
-
-# The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
-@client.command(aliases=['pf', 'profiles', 'p'])
-async def profile(message):
-    if message.author == client.get_user(USER_IDS[Yuzuru]):
-        await message.channel.send(str(Yuzuru))
-
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
-async def search(ctx):
+async def search(ctx, *args): # pass all arguments as a list
     """
-       This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this less
-       cancer like. The idea is that people will DM the bot and the information will be sent to the Discord Channels where
-       every GM can see and access the players inquiries. Though, the code works, it's just ugly. This uses the Dictionary.
+        Send a message to the GMs based on where you are in the RP.
+
+        Restrictions: Participants only. Bot must be DM'd.
+        Usages: y!search <area> <message>
+            Areas:
+                [a]: Section A
+                [b]: Section B
+                [c]: Section C
+                [d]: Section D
+                [e]: Section E
+                [i]: All Intersections
+        Examples:
+            y!search [a] Lock the door.
+            y!search [b] Can I activate the time machine?
+            y!search [c] Tries to take the car keys.
+            y!search [d] Attacks Batter.
+            y!search [e] Check underneath the dead body for items.
+            y!search [i] Activate bomb.
+        Aliases: s, searc, sear, ask
     """
 
-    # log message
-    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
+
+    """
+        If the user doesn't use any arguments at all, e.g. the user just did y!s, we will get an IndexError
+        exception since the list args is empty. The trick with .join returning an empty string doesn't work if the
+        list args is empty. So, we create a try-except block to deal with the error.
+    """
+    # We do this so that the variable scope is outside the try block. Meaning that the variable can be used
+    # in the rest of the code.
+    channel_target = None
+    try:
+        channel_target = args[0] # get channel identifier to send message to
+    except IndexError:
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
+        return # end the command since the user fails at doing the command correctly
+
+    """
+        Skip bot command info in message. We're combining all the arguments in the message into a string,
+        seperating them with a space. If there are no message arguments, e.g. the user just did [a], normally we'd get 
+        an IndexError exception since the index [1] doesn't exist. The string .join method instead returns an
+        empty string.
+    """
+    main_message = ' '.join(args[1:])
+
+    # Format message with code style if message isn't empty. We can do this by passing in a string. If the string
+    # is empty it will return a False value, and if it isn't it will return a True value.
+    if (main_message):
+        main_message = '**`' + main_message + '`**'
+
+    # full message to send to channel with standardize bot command name info
+    message_to_channel =  '**{0.author}**: y!search {1}'.format(ctx, main_message)
 
     is_channel_char_found = False
 
-    # send user's message to correct channel based on the channel character
-    for channel_char in DISCORD_CHANNELS.keys():
-        if ((channel_char.lower() in ctx.message.content.lower())
-                and (not is_channel_char_found)):
+    # Command only works if message was a DM. GM's can bypass this restriction.
+    if ((ctx.guild is None)
+            or (is_gm(ctx))):
 
-            # get channel id based on channel name, using the channel character
-            channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
+        # send user's message to correct channel based on the channel identifier
+        for channel_char in DISCORD_CHANNELS.keys():
+            if (is_channel_char_found): # only process 1 channel
+                break
 
-            await ctx.send(":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-            await channel.send(msg)
+            elif ((channel_char.lower() in ctx.message.content.lower())):
 
-            # only process the first channel character found
-            is_channel_char_found = True
+                # get channel id based on channel name, using the channel identifier
+                channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
 
+                await channel.send(message_to_channel)
+                await ctx.send(
+                    ":warning: **Your message has been sent to the GMs!** :warning: \n> Please wait for a moment...")
+                is_channel_char_found = True
+                break # only process the first channel character found
+
+        if (not is_channel_char_found):
+            await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid area section for current RP.".format(channel_target))
+
+    else:
+        await ctx.send(
+            ":no_entry: **You are not allowed to message your search query publicly. Send a DM instead.** :no_entry:")
 
 @client.command(aliases=['r', 'rpy', 'rep'])
-async def reply(ctx):
+@commands.check(is_gm)
+async def reply(ctx, *args): # pass all arguments as a list
     """
-    This is unfinished, as you may have guessed. This code has the same issue as the above and I have no idea how to
-    fix it. The idea is that the GMs will be able to send messages to players on the spot. This uses the dictionary.
-    Also, this poses an issue as, if I were to do 'y!r [Jay] {Message}', the 'y!r [Jay]' is included and it's ugly.
+    Send a reply message to an RP participant.
+
+    Restrictions: GMs only.
+    Users:
+        Participant:
+            [Perkorn]
+            [Jeremy]
+            [Twice]
+            [Nookuon]
+            [Lillie]
+            [Arko]
+            [Coffee]
+            [Cam]
+            [Zocobo]
+            [Clopel]
+            [Riam]
+            [Skrubby]
+            [DC]
+            [Lyn]
+            [Megumin]
+        GM:
+            [Yuzuru]
+            [Servant]
+            [Negative]
+            [Mobel]
+            [Noire]
+            [Shaw]
+        Other:
+            [Jay]
+            [Jovial]
+    Usages: y!reply <user> <message>
+    Examples:
+        y!reply [Lyn] There is no metal upa behind the box.
+    Aliases: r, rpy, rep
     """
 
-    # log message
-    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    # Formatting the help message description is too much hassle. This is good enough.
+    # And yes, this is mandatory. Otherwise people will not know how to use your bot.
 
-    is_username_found = False
+    # I added a bunch of error checking here, to give you some more code examples that
+    # you can read up and understand. They're not really needed for the other functions,
+    # but I bet it will make other people who use your bot like it more.
 
-    # send a message to the user matching the username
-    for username in USER_IDS.keys():
-        if ((username.lower() in ctx.message.content.lower())
-                and (not is_username_found)):
+    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
 
-            # get user id based on username
-            pid = client.get_user(USER_IDS[username])
+    """
+        If the user doesn't use any arguments at all, e.g. the user just did y!r, we will get an IndexError
+        exception since the list args is empty. The trick with .join returning an empty string doesn't work if the
+        list args is empty. So, we create a try-except block to deal with the error.
+    """
+    # We do this so that the variable scope is outside the try block. Meaning that the variable can be used
+    # in the rest of the code.
+    user_target = None
+    try:
+        user_target = args[0] # get user identifier to send message to
+    except IndexError:
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
+        return # end the command since the user fails at doing the command correctly
 
+    """
+        Skip bot command info in message. We're combining all the arguments in the message into a string,
+        seperating them with a space. If there are no message arguments, e.g. the user just did [_F], normally we'd get 
+        an IndexError exception since the index [1] doesn't exist. The string .join method instead returns an
+        empty string.
+    """
+    main_message = ' '.join(args[1:])
+
+    # full message to send to user with no bot command info
+    message_to_user =  '**{0.author}**: {1}'.format(ctx, main_message)
+
+    is_user_target_found = False
+
+    # send a message to the target user if they are in the rp
+    for user in USER_IDS.keys():
+        if (is_user_target_found): # only process 1 user
+            break
+
+        elif ((user.lower() in user_target.lower())
+                and (not is_user_target_found)):
+
+            pid = client.get_user(USER_IDS[user]) # get target user's id based on username
+
+            await pid.send(message_to_user)
             await ctx.send(":warning: **Message was sent!** :warning:")
-            await pid.send(msg)
 
-            # only process the first username found
-            is_username_found = True
+            is_user_target_found = True
+
+    if (not is_user_target_found):
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid user for current RP.".format(user_target))
 
 @client.command()
 async def test2(ctx):
-    pid = discord.utils.get(client.get_all_members(), name='_F')
-    pid = client.get_user(USER_IDS['[_F]'])
-    username = list(USER_IDS.keys())[0]
-    print(username.lower() in ctx.message.content.lower())
-    await pid.send("Hi this works!")
+    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg2 = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg3 = ctx.message.content[ctx.message.content.find(' '):]
+    await ctx.send(msg3)
+    await ctx.send("f")
     
 # Runs the log program.
 logs()
