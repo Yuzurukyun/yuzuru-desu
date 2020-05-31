@@ -108,17 +108,103 @@ class Character: # class name should be singular
         self.money = money
         self.doc = doc
 
-    def add_money(self, amount):
-        self.money += amount
-
-    def subtract_money(self, amount):
-        self.money -= amount
-
     def __str__(self):
         return '`Name:` **{self.name}** \n`Resides in:` **{self.reside}** \n`Money:` You have **{self.money}¥**' \
                ' \n`Document:` {self.doc}'.format(self=self)
 
 CHARACTER_DATA = {
+    '[Perkorn]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Jeremy]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Twice]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Nookuon]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Lillie]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Arko]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Coffee]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Cam]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Zocobo]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Clopel]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Riam]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Skrubby]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[DC]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Lyn]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Megumin]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+
+    # need to give them high access to debug bot commands
     '[_F]': Character(
         'Daru',
         'Future Gadget Lab',
@@ -133,6 +219,11 @@ CHARACTER_DATA = {
     )
 }
 
+# check if user is a GM for the rp
+def is_gm(ctx):
+    is_user_gm = ctx.author.id in GM_IDS.values()
+    return is_user_gm
+
 # This is a test command for a bigger command later on -- profiles. Look below for it.
 @client.command()
 async def mf(message):
@@ -141,6 +232,64 @@ async def mf(message):
     if message.author == client.get_user(id):
         await message.channel.send(f'You are mom')
 
+@client.command(aliases=['b', 'bk'])
+@commands.check(is_gm)
+async def bank(ctx, user_target, amount: int):
+    """
+        Modify bank account of an RP participant.
+
+        Restrictions: GM's only.
+        Users:
+            Participant:
+                [Perkorn]
+                [Jeremy]
+                [Twice]
+                [Nookuon]
+                [Lillie]
+                [Arko]
+                [Coffee]
+                [Cam]
+                [Zocobo]
+                [Clopel]
+                [Riam]
+                [Skrubby]
+                [DC]
+                [Lyn]
+                [Megumin]
+        Usages: y!bank <user> <amount>
+        Examples:
+            y!bank [Coffee] -10000
+            y!bank [Perkorn] 999999
+        Aliases: b, bk
+    """
+    is_user_target_found = False
+
+    for user in CHARACTER_DATA.keys():
+        if (is_user_target_found): # only process 1 user
+            break
+
+        elif ((user.lower() in user_target.lower())
+              and (not is_user_target_found)):
+
+            orig_amount = CHARACTER_DATA[user].money # money in user's bank account before the transaction
+            CHARACTER_DATA[user].money += amount # update user's bank account
+
+            pid = client.get_user(USER_IDS[user]) # get target user's id based on username
+            # notify user of bank transaction
+            await pid.send(
+                ":warning: **Bank account updated from {0}¥ to {1}¥** :warning: \n> Authorized by {2.author}".format(
+                    orig_amount, CHARACTER_DATA[user].money, ctx))
+
+            # notify the GM that the bank account has been updated
+            await ctx.send(
+                ":warning: **Updated {0} bank account from {1}¥ to {2}¥** :warning:".format(
+                    pid, orig_amount, CHARACTER_DATA[user].money))
+
+            is_user_target_found = True
+
+    if (not is_user_target_found):
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid participant user for current RP.".format(user_target))
 
 # The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
 @client.command(aliases=['p', 'pf', 'profiles'])
@@ -164,10 +313,17 @@ async def profile(ctx):
     if ((ctx.guild is None)
             or (force_cmd in ctx.message.content.lower())):
 
+        is_user_found = False
+
         # show user's profile based on their user id
         for user in USER_IDS.keys():
             if (ctx.author.id == USER_IDS[user]):
                 await ctx.send(CHARACTER_DATA[user])
+                is_user_found = True
+
+        if (not is_user_found):
+            await ctx.send(
+                ":no_entry: **ERROR** :no_entry: \n> __{0.author}__ invalid user for current RP.".format(ctx))
 
     else:
         await ctx.send(":warning: **To reveal your profile publicly, add `force` to the command.** :warning:\n"
@@ -194,6 +350,9 @@ async def on_command_error(ctx, error):
                        '\nI suggest** ***literal suicide*** **or** `yu!help`.')
 
     if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('**Please input a valid argument.** `e.g. yu!search [argument]`')
+
+    if isinstance(error, commands.BadArgument):
         await ctx.send('**Please input a valid argument.** `e.g. yu!search [argument]`')
 
 
@@ -345,16 +504,11 @@ async def search(ctx, *args): # pass all arguments as a list
         await ctx.send(
             ":no_entry: **You are not allowed to message your search query publicly. Send a DM instead.** :no_entry:")
 
-# check if user is a GM for the rp
-def is_gm(ctx):
-    is_user_gm = ctx.author.id in GM_IDS.values()
-    return is_user_gm
-
 @client.command(aliases=['r', 'rpy', 'rep'])
 @commands.check(is_gm)
 async def reply(ctx, *args): # pass all arguments as a list
     """
-    Send a reply message to a RP participant.
+    Send a reply message to an RP participant.
 
     Restrictions: GMs only.
     Users:
