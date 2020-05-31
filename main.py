@@ -189,6 +189,12 @@ async def servant(ctx):
 # Gay double ping time.
 @client.command()
 async def gay(ctx, member: discord.Member):
+    """
+    Mention someone to declared them gay.
+
+    Usages: y!gay <member>
+    Examples: y!gay @Yuzuru Nishimiya#3327
+    """
     await ctx.send(f"{member.mention} is gay lol!!!")
 
 
@@ -210,15 +216,61 @@ async def profile(message):
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
 async def search(ctx, *args): # pass all arguments as a list
     """
-        This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this
-        less cancer like. The idea is that people will DM the bot and the information will be sent to the Discord
-        Channels where every GM can see and access the players inquiries. Though, the code works, it's just ugly.
-        This uses the Dictionary.
+        Send a message to a GM based on where you are in the RP.
+
+        Restrictions: Participants only. Bot must be DM'd.
+        Usages: y!search <area> <message>
+            Areas:
+                [a]: Section A
+                [b]: Section B
+                [c]: Section C
+                [d]: Section D
+                [e]: Section E
+                [i]: All Intersections
+        Examples:
+            y!search [a] Lock the door.
+            y!search [b] Can I activate the time machine?
+            y!search [c] Try to take the car keys.
+            y!search [d] Attacks Batter.
+            y!search [e] Check underneath the dead body for items.
+            y!search [i] Activate bomb.
+        Aliases: s, searc, sear, ask
     """
 
     msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
 
-    channel_target = args[0] # get channel identifier to send message to
+    """
+        If the user doesn't use any arguments at all, e.g. the user just did y!s, we will get an IndexError
+        exception since the list args is empty. The trick with .join returning an empty string doesn't work if the
+        list args is empty. So, we create a try-except block to deal with the error.
+    """
+    # We do this so that the variable scope is outside the try block. Meaning that the variable can be used
+    # in the rest of the code.
+    channel_target = None
+    try:
+        channel_target = args[0] # get channel identifier to send message to
+    except IndexError:
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
+        return # end the command since the user fails at doing the command correctly
+
+    """
+        Skip bot command info in message. We're combining all the arguments in the message into a string,
+        seperating them with a space. If there are no message arguments, e.g. the user just did [a], normally we'd get 
+        an IndexError exception since the index [1] doesn't exist. The string .join method instead returns an
+        empty string.
+    """
+    main_message = ' '.join(args[1:])
+
+    # Format message with code style if message isn't empty. We can do this by passing in a string. If the string
+    # is empty it will return a False value, and if it isn't it will return a True value.
+    if (main_message):
+        main_message = '**`' + main_message + '`**'
+
+    # full message to send to channel with standardize bot command name info
+    message_to_channel =  '**{0.author}**: y!search {1}'.format(ctx, main_message)
+
+    is_channel_char_found = False
 
     # Command only works if message was a DM. GM's can bypass this restriction.
     if ((ctx.guild is None)
@@ -226,26 +278,23 @@ async def search(ctx, *args): # pass all arguments as a list
 
         # send user's message to correct channel based on the channel identifier
         for channel_char in DISCORD_CHANNELS.keys():
-            if ((channel_char.lower() in ctx.message.content.lower())):
+            if (is_channel_char_found): # only process 1 channel
+                break
+
+            elif ((channel_char.lower() in ctx.message.content.lower())):
 
                 # get channel id based on channel name, using the channel identifier
                 channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
 
-                await channel.send(msg)
+                await channel.send(message_to_channel)
                 await ctx.send(
-                    ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
+                    ":warning: **Your message has been sent to the GMs!** :warning: \n> Please wait for a moment...")
                 is_channel_char_found = True
                 break # only process the first channel character found
 
-
-        # send message to retard-messages channel
         if (not is_channel_char_found):
-            channel = utils.get(client.get_all_channels(), name=RETARD_CHANNEL)
-
-            await channel.send(msg)
             await ctx.send(
-                ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid area section for current RP.".format(channel_target))
 
     else:
         await ctx.send(
@@ -260,10 +309,39 @@ def is_gm(ctx):
 @commands.check(is_gm)
 async def reply(ctx, *args): # pass all arguments as a list
     """
-    Send a message to an RP participant.
+    Send a reply message to an RP participant.
 
-    Usages: y!reply <user>
-    Examples: y!reply [_F] There is no metal upa behind the box.
+    Restrictions: GMs only.
+    Users:
+        Participant:
+            [Perkorn]
+            [Jeremy]
+            [Twice]
+            [Nookuon]
+            [Lillie]
+            [Arko]
+            [Coffee]
+            [Cam]
+            [Zocobo]
+            [Clopel]
+            [Riam]
+            [Skrubby]
+            [DC]
+            [Lyn]
+            [Megumin]
+        GM:
+            [Yuzuru]
+            [Servant]
+            [Negative]
+            [Mobel]
+            [Noire]
+            [Shaw]
+        Other:
+            [Jay]
+            [Jovial]
+    Usages: y!reply <user> <message>
+    Examples:
+        y!reply [Lyn] There is no metal upa behind the box.
     Aliases: r, rpy, rep
     """
 
@@ -281,8 +359,11 @@ async def reply(ctx, *args): # pass all arguments as a list
         exception since the list args is empty. The trick with .join returning an empty string doesn't work if the
         list args is empty. So, we create a try-except block to deal with the error.
     """
+    # We do this so that the variable scope is outside the try block. Meaning that the variable can be used
+    # in the rest of the code.
+    user_target = None
     try:
-        user_target = args[0]
+        user_target = args[0] # get user identifier to send message to
     except IndexError:
         await ctx.send(
             ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
@@ -296,7 +377,8 @@ async def reply(ctx, *args): # pass all arguments as a list
     """
     main_message = ' '.join(args[1:])
 
-    message_to_user =  '**{0.author}**: {1}'.format(ctx, main_message) # full message to send to user with bot commands
+    # full message to send to user with no bot command info
+    message_to_user =  '**{0.author}**: {1}'.format(ctx, main_message)
 
     is_user_target_found = False
 
