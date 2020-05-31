@@ -43,7 +43,7 @@ RETARD_CHANNEL = 'retard-messages'
 
 # GM IDs who GMs the roleplay.
 GM_IDS = {
-    '[Yuzuru]': 332456386946531328,
+    '[Yuzuru]'    : 332456386946531328,
     '[Servant]'   :   173404147901661184,
     '[Negative]'  :   624214764226084884,
     '[Mobel]'     :   309650909741318154,
@@ -95,26 +95,83 @@ def logs():
 # The command bot command.
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
 
-class Characters:
+class Character: # class name should be singular
     """
         Class for the Characters. My peeve for this is that I don't know how to take a single element and use it
         outside of the __str__. I just couldn't due to my incompetence and tackling tougher subjects without
         learning the basics.
     """
-    def __init__(self, name, reside, moneys, doc):
+
+    def __init__(self, name, reside, money, doc):
         self.name = name
-        self.doc = doc
-        self.moneys = moneys
         self.reside = reside
+        self.money = money
+        self.doc = doc
+
+    def add_money(self, amount):
+        self.money += amount
+
+    def subtract_money(self, amount):
+        self.money -= amount
 
     def __str__(self):
-        return '`Name:` **{self.name}** \n`Reside in:` **{self.reside}** `\n`Money:` You have **{self.moneys}¥**' \
+        return '`Name:` **{self.name}** \n`Resides in:` **{self.reside}** \n`Money:` You have **{self.money}¥**' \
                ' \n`Document:` {self.doc}'.format(self=self)
 
+CHARACTER_DATA = {
+    '[_F]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    ),
+    '[Yuzuru]': Character(
+        'Daru',
+        'Future Gadget Lab',
+        24000,
+        'https://deathwarrantbychance.imfast.io/'
+    )
+}
 
-# Character Data (name, doc, money)
-Yuzuru = Characters('We are no strangers to love', 'You know the rules, so do I.',
-                    'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1000)
+# This is a test command for a bigger command later on -- profiles. Look below for it.
+@client.command()
+async def mf(message):
+    # id = 332456386946531328
+    id = 263253261094486016
+    if message.author == client.get_user(id):
+        await message.channel.send(f'You are mom')
+
+
+# The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
+@client.command(aliases=['p', 'pf', 'profiles'])
+async def profile(ctx):
+    """
+        Show your character profile in the RP.
+
+        Use force command to show profile in public.
+
+        Restrictions: Bot must be DM'd.
+        Usages: y!profile <force>
+        Examples:
+            y!profile
+            y!profile force
+        Aliases: p, pf, profiles
+    """
+
+    force_cmd = "force" # keyword to force displaying someone's profile when not in a DM
+
+    # Command only works if message was a DM. Use the force keyword to bypass the restriction.
+    if ((ctx.guild is None)
+            or (force_cmd in ctx.message.content.lower())):
+
+        # show user's profile based on their user id
+        for user in USER_IDS.keys():
+            if (ctx.author.id == USER_IDS[user]):
+                await ctx.send(CHARACTER_DATA[user])
+
+    else:
+        await ctx.send(":warning: **To reveal your profile publicly, add `force` to the command.** :warning:\n"
+                       + "> DM to see your profile.")
 
 
 # The On_Ready event.
@@ -126,6 +183,10 @@ async def on_ready():
 
 
 # The Error Catcher event.
+"""
+    So I just noticed that you did this. So, yeah, I probably should have looked into this a bit more and put
+    more error checking here. You can do that though.
+"""
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -197,26 +258,10 @@ async def gay(ctx, member: discord.Member):
     """
     await ctx.send(f"{member.mention} is gay lol!!!")
 
-
-# This is a test command for a bigger command later on -- profiles. Look below for it.
-@client.command()
-async def mf(message):
-    # id = 332456386946531328
-    id = 263253261094486016
-    if message.author == client.get_user(id):
-        await message.channel.send(f'You are mom')
-
-
-# The idea is that, if they were to do 'y!profile', the user will receive their information and their information alone.
-@client.command(aliases=['pf', 'profiles', 'p'])
-async def profile(message):
-    if message.author == client.get_user(USER_IDS[Yuzuru]):
-        await message.channel.send(str(Yuzuru))
-
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
 async def search(ctx, *args): # pass all arguments as a list
     """
-        Send a message to a GM based on where you are in the RP.
+        Send a message to the GMs based on where you are in the RP.
 
         Restrictions: Participants only. Bot must be DM'd.
         Usages: y!search <area> <message>
@@ -230,7 +275,7 @@ async def search(ctx, *args): # pass all arguments as a list
         Examples:
             y!search [a] Lock the door.
             y!search [b] Can I activate the time machine?
-            y!search [c] Try to take the car keys.
+            y!search [c] Tries to take the car keys.
             y!search [d] Attacks Batter.
             y!search [e] Check underneath the dead body for items.
             y!search [i] Activate bomb.
@@ -309,7 +354,7 @@ def is_gm(ctx):
 @commands.check(is_gm)
 async def reply(ctx, *args): # pass all arguments as a list
     """
-    Send a reply message to an RP participant.
+    Send a reply message to a RP participant.
 
     Restrictions: GMs only.
     Users:
