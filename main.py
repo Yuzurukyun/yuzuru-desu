@@ -208,7 +208,7 @@ async def profile(message):
         await message.channel.send(str(Yuzuru))
 
 @client.command(aliases=['s', 'searc', 'sear', 'ask'])
-async def search(ctx):
+async def search(ctx, *args): # pass all arguments as a list
     """
         This one took a bit to write, but overall need optimization and factoring. There has to be a way to make this
         less cancer like. The idea is that people will DM the bot and the information will be sent to the Discord
@@ -216,39 +216,36 @@ async def search(ctx):
         This uses the Dictionary.
     """
 
-    # log message
-    msg = '**{0.author}**: {0.message.content}'.format(ctx)
+    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
 
-    # Search query must be sent in DM's. GM's are an exception.
-    # if ((ctx.guild is None)
-    #         or (ctx.author.id in GM_IDS.values())):
+    channel_target = args[0] # get channel identifier to send message to
 
+    # Command only works if message was a DM. GM's can bypass this restriction.
     if ((ctx.guild is None)
             or (is_gm(ctx))):
 
-        is_channel_char_found = False
-
-        # send user's message to correct channel based on the channel character
+        # send user's message to correct channel based on the channel identifier
         for channel_char in DISCORD_CHANNELS.keys():
-            if ((channel_char.lower() in ctx.message.content.lower())
-                    and (not is_channel_char_found)):
+            if ((channel_char.lower() in ctx.message.content.lower())):
 
-                # get channel id based on channel name, using the channel character
+                # get channel id based on channel name, using the channel identifier
                 channel = utils.get(client.get_all_channels(), name=DISCORD_CHANNELS[channel_char])
 
+                await channel.send(msg)
                 await ctx.send(
                     ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-                await channel.send(msg)
-
-                # only process the first channel character found
                 is_channel_char_found = True
+                break # only process the first channel character found
+
 
         # send message to retard-messages channel
         if (not is_channel_char_found):
             channel = utils.get(client.get_all_channels(), name=RETARD_CHANNEL)
+
+            await channel.send(msg)
             await ctx.send(
                 ":warning: **Your message has been sent to the GMs! :warning: \n> Please wait for a moment...**")
-            await channel.send(msg)
+
 
     else:
         await ctx.send(
@@ -263,24 +260,64 @@ def is_gm(ctx):
 @commands.check(is_gm)
 async def reply(ctx, *args): # pass all arguments as a list
     """
-    This is unfinished, as you may have guessed. This code has the same issue as the above and I have no idea how to
-    fix it. The idea is that the GMs will be able to send messages to players on the spot. This uses the dictionary.
-    Also, this poses an issue as, if I were to do 'y!r [Jay] {Message}', the 'y!r [Jay]' is included and it's ugly.
+    Send a message to an RP participant.
+
+    Usages: y!reply <user>
+    Examples: y!reply [_F] There is no metal upa behind the box.
+    Aliases: r, rpy, rep
     """
 
-    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
-    message_to_user = '**{0.author}**: {1}'.format(ctx, args[1]) # skip 1st argument (bot command) of original message
+    # Formatting the help message description is too much hassle. This is good enough.
+    # And yes, this is mandatory. Otherwise people will not know how to use your bot.
 
-    user_target = args[0] # get username character identifier to send message to
+    # I added a bunch of error checking here, to give you some more code examples that
+    # you can read up and understand. They're not really needed for the other functions,
+    # but I bet it will make other people who use your bot like it more.
+
+    msg = '**{0.author}**: {0.message.content}'.format(ctx) # log message
+
+    """
+        If the user doesn't use any arguments at all, e.g. the user just did y!r, we will get an IndexError
+        exception since the list args is empty. The trick with .join returning an empty string doesn't work if the
+        list args is empty. So, we create a try-except block to deal with the error.
+    """
+    try:
+        user_target = args[0]
+    except IndexError:
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
+        return # end the command since the user fails at doing the command correctly
+
+    """
+        Skip bot command info in message. We're combining all the arguments in the message into a string,
+        seperating them with a space. If there are no message arguments, e.g. the user just did [_F], normally we'd get 
+        an IndexError exception since the index [1] doesn't exist. The string .join method instead returns an
+        empty string.
+    """
+    main_message = ' '.join(args[1:])
+
+    message_to_user =  '**{0.author}**: {1}'.format(ctx, main_message) # full message to send to user with bot commands
+
+    is_user_target_found = False
 
     # send a message to the target user if they are in the rp
     for user in USER_IDS.keys():
-        if (user.lower() in user_target.lower()):
+        if (is_user_target_found): # only process 1 user
+            break
+
+        elif ((user.lower() in user_target.lower())
+                and (not is_user_target_found)):
+
             pid = client.get_user(USER_IDS[user]) # get target user's id based on username
 
-            await ctx.send(":warning: **Message was sent!** :warning:")
             await pid.send(message_to_user)
-            break # only process 1 user
+            await ctx.send(":warning: **Message was sent!** :warning:")
+
+            is_user_target_found = True
+
+    if (not is_user_target_found):
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid user for current RP.".format(user_target))
 
 @client.command()
 async def test2(ctx):
