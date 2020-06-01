@@ -1,6 +1,7 @@
 # import standard python libraries
 import os
 import logging
+import json
 from dotenv import load_dotenv
 
 # import custom classes
@@ -115,96 +116,104 @@ class Character:  # class name should be singular
         return '`Name:` **{self.name}** \n`Resides in:` **{self.reside}** \n`Money:` You have **{self.money}¥**' \
                ' \n`Document:` {self.doc}'.format(self=self)
 
+# A really hacky fix to save data. Only works for the money. The work required to do it properly will take a long time.
+# Only do this very bad technique because saving money is important.
+
+CHARACTER_MONEY = None
+
+with open('character_money.json', 'r') as file:
+    CHARACTER_MONEY = json.load(file)
+    file.close()
 
 CHARACTER_DATA = {
     '[Perkorn]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Perkorn]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Jeremy]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Jeremy]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Twice]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Twice]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Nookuon]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Nookuon]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Lillie]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Lillie]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Arko]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Arko]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Coffee]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Coffee]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Cam]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Cam]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Zocobo]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Zocobo]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Clopel]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Clopel]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Riam]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Riam]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Skrubby]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Skrubby]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[DC]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[DC]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Lyn]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Lyn]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Megumin]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Megumin]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
 
@@ -212,13 +221,13 @@ CHARACTER_DATA = {
     '[_F]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[_F]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Yuzuru]': Character(
         'Daru',
         'Future Gadget Lab',
-        24000,
+        CHARACTER_MONEY['[Yuzuru]'],
         'https://deathwarrantbychance.imfast.io/'
     )
 }
@@ -252,6 +261,10 @@ async def unload(ctx, extension):
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
+
+@client.command(aliases=['c', 'ck'])
+@commands.check(is_gm)
+async def check(ctx, user_target):
 
 
 @client.command(aliases=['b', 'bk'])
@@ -294,6 +307,13 @@ async def bank(ctx, user_target, amount: int):
 
             orig_amount = CHARACTER_DATA[user].money  # money in user's bank account before the transaction
             CHARACTER_DATA[user].money += amount  # update user's bank account
+
+            # Very very very hacky solution. Only doing this for a quick solution.
+            # Save the new money in the character_money.json file
+            CHARACTER_MONEY[user] += amount
+            with open('character_money.json', 'w') as file:
+                json.dump(CHARACTER_MONEY, file, indent=2)
+                file.close()
 
             pid = client.get_user(USER_IDS[user])  # get target user's id based on username
             # notify user of bank transaction
