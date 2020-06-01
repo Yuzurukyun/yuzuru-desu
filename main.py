@@ -77,6 +77,7 @@ PARTICIPANT_IDS = {
 OTHER_IDS = {
     '[Jay]': 210143294972231681,
     '[Jovial]': 268074911619219456,
+    '[Salanto]': 200278357235990528
 }
 
 # Dictionary for the list of all User IDs in the roleplay. IDs are required since a user may change their name.
@@ -96,7 +97,8 @@ def logs():
 
 
 # The command bot command.
-client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!'), case_insensitive=True)
+client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'),
+                      case_insensitive=True)
 
 
 class Character:  # class name should be singular
@@ -121,114 +123,115 @@ class Character:  # class name should be singular
 
 CHARACTER_MONEY = None
 
+
 with open('character_money.json', 'r') as file:
     CHARACTER_MONEY = json.load(file)
     file.close()
 
 CHARACTER_DATA = {
     '[Perkorn]': Character(
-        'Kurisu',
-        'Future Gadget Lab',
+        'Kurisu Makise',
+        'Hotel Room 412',
         CHARACTER_MONEY['[Perkorn]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1MOkA6N3YUsT2_DmnY0NzRnHA0p-EbtS9Oo9ToeTqJFQ/edit'
     ),
     '[Jeremy]': Character(
-        'Suzuha',
-        'Future Gadget Lab',
+        'Suzuha Amane',
+        'Small House (Section E)',
         CHARACTER_MONEY['[Jeremy]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/143DsMShw7yLJgBhwejl0ASkVAC2BArUWHmRvOCXMRek/edit'
     ),
     '[Twice]': Character(
-        'Batter',
-        'Future Gadget Lab',
+        'Battler Ushiromiya',
+        'Hotel Room 420',
         CHARACTER_MONEY['[Twice]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/18aTcFr4v0-Res1Md91UqZ-oAB8_n4Elw08Cftbh8BZA/edit'
     ),
     '[Nookuon]': Character(
-        'Ayaka',
+        'Ayaka Yukimoto',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Nookuon]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Lillie]': Character(
-        'Faris',
-        'Future Gadget Lab',
+        'Rumiho Akiha (Faris Nyan-Nyan)',
+        'The Condo (Except Room 1)',
         CHARACTER_MONEY['[Lillie]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1gJ9fhd9yWeghM_NQ39DtqPNWoQ-ymZChUID4QvGniis/edit'
     ),
     '[Arko]': Character(
-        'Reserve',
-        'Future Gadget Lab',
+        'Rumiho Akiha (Faris Nyan-Nyan)',
+        'The Condo (Except Room 1)',
         CHARACTER_MONEY['[Arko]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1gJ9fhd9yWeghM_NQ39DtqPNWoQ-ymZChUID4QvGniis/edit'
     ),
     '[Coffee]': Character(
-        'Moeka',
-        'Future Gadget Lab',
+        'Moeka Kiryu',
+        'Apartment Room 105',
         CHARACTER_MONEY['[Coffee]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1BuHE-mQ2a_IE6WIqNnOJtXH1iZ43QSmwZGg28kgQIDM/edit'
     ),
     '[Cam]': Character(
-        'Maho',
-        'Future Gadget Lab',
+        'Maho Hiyajo',
+        'Hotel Room 412',
         CHARACTER_MONEY['[Cam]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1igcjc70spmEuFWBFfNUQlrYysh4d0WujveziFsum1i4/edit'
     ),
     '[Zocobo]': Character(
-        'Luka',
-        'Future Gadget Lab',
+        'Luka Urushibara',
+        'Yanagibayashi Shrine',
         CHARACTER_MONEY['[Zocobo]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1TlFGS81xkgvaFZ78OtAbA64xx6RCwxkYVBBbyEd7olg/edit'
     ),
     '[Clopel]': Character(
-        'Rei',
-        'Future Gadget Lab',
+        'Rei Mekaru',
+        'Hotel Room 420 (Originally Room 411)',
         CHARACTER_MONEY['[Clopel]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1ybGmQW-T-bxS6cOoEOlrlmCiiTF8ZTCgaZTunLMl2iw/edit'
     ),
     '[Riam]': Character(
-        'Someone IDK',
-        'Future Gadget Lab',
+        'Lyle D. Termina',
+        'Hotel Room 410',
         CHARACTER_MONEY['[Riam]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1ZYGjAj_HNY-w7fEuXkM83sxUd5W_-tFfA74M3ysIlfc/edit'
     ),
-    '[Syobai]': Character(
-        'Daru',
-        'Future Gadget Lab',
+    '[Skrubby]': Character(
+        'Syobai Hashimoto',
+        'Condo Room 1 (Shop: Shopping Complex Entrance)',
         CHARACTER_MONEY['[Skrubby]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1znpFpaZmfvq0k1JNUtjOTBE8pWFQ9ylnoieUNXXYS7E/edit'
     ),
     '[DC]': Character(
-        'Someone IDK',
-        'Future Gadget Lab',
+        'Yuuji Diabolique',
+        'Hotel Room 419',
         CHARACTER_MONEY['[DC]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1gBOyQiFRAKhC9mIRKP9vaavIL1RkOe3LK0zib4gsrjo/edit'
     ),
     '[Lyn]': Character(
-        'Okabe',
+        'Rintaro Okabe',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Lyn]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1L5FOg-Yx4LLLLgSzpyr0LvxK-YG00ZutabXPMQIkTgw/edit'
     ),
     '[Megumin]': Character(
-        'Mayuri',
-        'Future Gadget Lab',
+        'Mayuri Shiina',
+        'Her Home lmao',
         CHARACTER_MONEY['[Megumin]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://docs.google.com/document/d/1aFV20hOGWw_lVCo30Q7p6kCmtU-DeLJpB6g1qP2o1XI/edit'
     ),
 
     # need to give them high access to debug bot commands
     '[_F]': Character(
-        'Daru',
-        'Future Gadget Lab',
+        'Itaru Hashida',
+        'His Home lmao',
         CHARACTER_MONEY['[_F]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Yuzuru]': Character(
-        'Gay',
-        'Future Gadget Lab',
+        'We are no strangers to love. You know the rules, so do I.',
+        "A full commitment is what I am thinking of, you won't get this from any other guy.",
         CHARACTER_MONEY['[Yuzuru]'],
-        'https://deathwarrantbychance.imfast.io/'
+        'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
     )
 }
 
@@ -578,7 +581,7 @@ async def search(ctx, *args):  # pass all arguments as a list
 
     # Format message with code style if message isn't empty. We can do this by passing in a string. If the string
     # is empty it will return a False value, and if it isn't it will return a True value.
-    if (main_message):
+    if main_message:
         main_message = '**`' + main_message + '`**'
 
     # full message to send to channel with standardize bot command name info
@@ -592,7 +595,7 @@ async def search(ctx, *args):  # pass all arguments as a list
 
         # send user's message to correct channel based on the channel identifier
         for channel_char in DISCORD_CHANNELS.keys():
-            if (is_channel_char_found):  # only process 1 channel
+            if is_channel_char_found:  # only process 1 channel
                 break
 
             elif channel_char.lower() in ctx.message.content.lower():
@@ -692,7 +695,7 @@ async def reply(ctx, *args):  # pass all arguments as a list
 
     # send a message to the target user if they are in the rp
     for user in USER_IDS.keys():
-        if (is_user_target_found):  # only process 1 user
+        if is_user_target_found:  # only process 1 user
             break
 
         elif ((user.lower() in user_target.lower())
@@ -705,7 +708,7 @@ async def reply(ctx, *args):  # pass all arguments as a list
 
             is_user_target_found = True
 
-    if (not is_user_target_found):
+    if not is_user_target_found:
         await ctx.send(
             ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid user for current RP.".format(user_target))
 
@@ -717,6 +720,12 @@ async def test2(ctx):
     msg3 = ctx.message.content[ctx.message.content.find(' '):]
     await ctx.send(msg3)
     await ctx.send("f")
+
+
+@client.command(hidden=True)
+async def literalsuicide(ctx):
+    await ctx.send("https://www.youtube.com/watch?v=2dbR2JZmlWo \nhttps://www.youtube.com/watch?v=-h5WrWncDZw")
+
 
 
 # Runs the log program.
