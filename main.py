@@ -127,91 +127,91 @@ with open('character_money.json', 'r') as file:
 
 CHARACTER_DATA = {
     '[Perkorn]': Character(
-        'Daru',
+        'Kurisu',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Perkorn]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Jeremy]': Character(
-        'Daru',
+        'Suzuha',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Jeremy]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Twice]': Character(
-        'Daru',
+        'Batter',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Twice]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Nookuon]': Character(
-        'Daru',
+        'Ayaka',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Nookuon]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Lillie]': Character(
-        'Daru',
+        'Faris',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Lillie]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Arko]': Character(
-        'Daru',
+        'Reserve',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Arko]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Coffee]': Character(
-        'Daru',
+        'Moeka',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Coffee]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Cam]': Character(
-        'Daru',
+        'Maho',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Cam]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Zocobo]': Character(
-        'Daru',
+        'Luka',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Zocobo]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Clopel]': Character(
-        'Daru',
+        'Rei',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Clopel]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Riam]': Character(
-        'Daru',
+        'Someone IDK',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Riam]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
-    '[Skrubby]': Character(
+    '[Syobai]': Character(
         'Daru',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Skrubby]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[DC]': Character(
-        'Daru',
+        'Someone IDK',
         'Future Gadget Lab',
         CHARACTER_MONEY['[DC]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Lyn]': Character(
-        'Daru',
+        'Okabe',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Lyn]'],
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Megumin]': Character(
-        'Daru',
+        'Mayuri',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Megumin]'],
         'https://deathwarrantbychance.imfast.io/'
@@ -225,7 +225,7 @@ CHARACTER_DATA = {
         'https://deathwarrantbychance.imfast.io/'
     ),
     '[Yuzuru]': Character(
-        'Daru',
+        'Gay',
         'Future Gadget Lab',
         CHARACTER_MONEY['[Yuzuru]'],
         'https://deathwarrantbychance.imfast.io/'
@@ -240,7 +240,7 @@ def is_gm(ctx):
 
 
 # This is a test command for a bigger command later on -- profiles. Look below for it.
-@client.command()
+@client.command(hidden=True) # hide command from y!help
 async def mf(message):
     # id = 332456386946531328
     id = 263253261094486016
@@ -248,12 +248,12 @@ async def mf(message):
         await message.channel.send(f'You are mom')
 
 
-@client.command()
+@client.command(hidden=True) # hide command from y!help
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
 
 
-@client.command()
+@client.command(hidden=True) # hide command from y!help
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
 
@@ -264,7 +264,62 @@ for filename in os.listdir('./cogs'):
 
 @client.command(aliases=['c', 'ck'])
 @commands.check(is_gm)
-async def check(ctx, user_target):
+async def check(ctx, *args): # pass all arguments as a list
+    """
+    Check a RP participant's character profile.
+
+    Restrictions: GMs only.
+    Users:
+        Participant:
+            [Perkorn]
+            [Jeremy]
+            [Twice]
+            [Nookuon]
+            [Lillie]
+            [Arko]
+            [Coffee]
+            [Cam]
+            [Zocobo]
+            [Clopel]
+            [Riam]
+            [Skrubby]
+            [DC]
+            [Lyn]
+            [Megumin]
+    Usages: y!check <user 1> <user 2> ... <user 5>
+    Examples:
+        y!check [Lyn]
+        y!check [Lyn] [Twice]
+        y!check [Lyn] [Twice] [Jeremy] [Perkorn] [Cam]
+    Aliases: c, ck
+    """
+
+    try:
+        test_target = args[0]  # check if user send any arguements
+    except IndexError:
+        await ctx.send(
+            ":no_entry: **ERROR** :no_entry: \n> No arguments were specified.")
+        return  # end the command since the user fails at doing the command correctly
+
+    is_user_target_found = None
+    user_list = args
+
+    # show target user's profile based on each user i
+    for user_target in args:
+        is_user_target_found = False
+        for user in USER_IDS.keys():
+            if (is_user_target_found): # only process 1 user
+                break
+
+            elif ((user.lower() in user_target.lower())
+                  and (not is_user_target_found)):
+                await ctx.send("`User:` **{0}**\n{1}".format(user, CHARACTER_DATA[user]))
+                is_user_target_found = True
+
+        if not is_user_target_found:
+            await ctx.send(
+                ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid user for current RP.".format(user_target))
+
 
 
 @client.command(aliases=['b', 'bk'])
@@ -272,6 +327,7 @@ async def check(ctx, user_target):
 async def bank(ctx, user_target, amount: int):
     """
         Modify bank account of an RP participant.
+
         Restrictions: GM's only.
         Users:
             Participant:
@@ -338,7 +394,9 @@ async def bank(ctx, user_target, amount: int):
 async def profile(ctx):
     """
         Show your character profile in the RP.
+
         Use force command to show profile in public.
+
         Restrictions: Bot must be DM'd.
         Usages: y!profile <force>
         Examples:
@@ -439,12 +497,21 @@ async def on_message(message):
 # Shaw is gay lol!
 @client.command()
 async def shaw(ctx):
-    await ctx.send('Shaw is gay lol!!!')
+    """
+    Declare that Shaw is gay.
 
+    Usages: y!shaw
+    """
+    await ctx.send('Shaw is gay lol!!!')
 
 # Servant.
 @client.command()
 async def servant(ctx):
+    """
+    Remind Servant that they are a good servant.
+
+    Usages: y!servant
+    """
     await ctx.send('Servant is a good servant to me.')
 
 
@@ -453,6 +520,7 @@ async def servant(ctx):
 async def gay(ctx, member: discord.Member):
     """
     Mention someone to declared them gay.
+
     Usages: y!gay <member>
     Examples: y!gay @Yuzuru Nishimiya#3327
     """
@@ -463,6 +531,7 @@ async def gay(ctx, member: discord.Member):
 async def search(ctx, *args):  # pass all arguments as a list
     """
         Send a message to the GMs based on where you are in the RP.
+
         Restrictions: Participants only. Bot must be DM'd.
         Usages: y!search <area> <message>
             Areas:
@@ -552,6 +621,7 @@ async def search(ctx, *args):  # pass all arguments as a list
 async def reply(ctx, *args):  # pass all arguments as a list
     """
     Send a reply message to an RP participant.
+
     Restrictions: GMs only.
     Users:
         Participant:
@@ -577,9 +647,6 @@ async def reply(ctx, *args):  # pass all arguments as a list
             [Mobel]
             [Noire]
             [Shaw]
-        Other:
-            [Jay]
-            [Jovial]
     Usages: y!reply <user> <message>
     Examples:
         y!reply [Lyn] There is no metal upa behind the box.
@@ -643,7 +710,7 @@ async def reply(ctx, *args):  # pass all arguments as a list
             ":no_entry: **ERROR** :no_entry: \n> __{0}__ invalid user for current RP.".format(user_target))
 
 
-@client.command()
+@client.command(hidden=True) # hide command from y!help
 async def test2(ctx):
     msg = '**{0.author}**: {0.message.content}'.format(ctx)
     msg2 = '**{0.author}**: {0.message.content}'.format(ctx)
