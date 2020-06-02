@@ -1,0 +1,8 @@
+.idea
+venv
+.gitignore
+.git
+discord.log
+flyctl.exe
+README.md
+user-logs

@@ -3,12 +3,15 @@ import os
 import logging
 import json
 from dotenv import load_dotenv
+from datetime import datetime
 
 # import custom classes
 
 # import third party libraries
+from pytz import timezone
 import discord
 from discord import utils
+from discord import File
 from discord.ext import commands
 
 # The .gitignore file will not upload the .env file, keeping the discord token
@@ -236,11 +239,35 @@ CHARACTER_DATA = {
 }
 
 
-# check if user is a GM for the rp
+
 def is_gm(ctx):
     is_user_gm = ctx.author.id in GM_IDS.values()
     return is_user_gm
 
+@client.command(aliases=['gb', 'getb', 'gbank'])
+@commands.check(is_gm)
+async def getbank(ctx):
+    """
+    Get bank data of RP participants. Required before bot shutdown.
+
+    Make sure to run this command before shutting down the bot.
+    Data is not saved when the bot is shut down while running on a server.
+    Data is saved if the bot is shut down while running on a local machine.
+    Implement an external database connection to save the data instead (not free so forget about it).
+
+    Restrictions: GM's only.
+    Usages: y!getbank
+    Aliases: gb, getb, gbank
+    """
+
+    bot_timezone = timezone('EST') # EST timezone
+    time_format = '%Y-%m-%d %H:%M:%S %Z%z'
+    curr_time = datetime.now(bot_timezone)
+
+    # time when the bank data is retrieved
+    msg_result = "`Last Updated`: **{0}**".format(curr_time.strftime(time_format))
+
+    await ctx.send(msg_result, file=File("character_money.json"))
 
 # This is a test command for a bigger command later on -- profiles. Look below for it.
 @client.command(hidden=True) # hide command from y!help
@@ -727,9 +754,9 @@ async def literalsuicide(ctx):
     await ctx.send("https://www.youtube.com/watch?v=2dbR2JZmlWo \nhttps://www.youtube.com/watch?v=-h5WrWncDZw")
 
 
+if __name__ == "__main__": # search this up as to why this is better
+    # Runs the log program.
+    logs()
 
-# Runs the log program.
-logs()
-
-# This runs the client.
-client.run(TOKEN)
+    # This runs the client.
+    client.run(TOKEN)
