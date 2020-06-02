@@ -12,10 +12,11 @@ In addition, it provides commands that allow GM's to manage discord DM's for an 
 
 The bot is currently deployed on a server using [Docker](https://www.docker.com/) and [fly.io](https://fly.io/) BaaS (backend as a service).
 
-### Discord Documentation
+### Discord Bot Documentation
 
 - [Official documentation](https://discord.com/developers/docs/intro)
 - [discord.py](https://discordpy.readthedocs.io/en/latest/)
+- [How to create and invite a bot to a Discord server](https://discordpy.readthedocs.io/en/latest/discord.html)
 
 ## Key Notes
 
