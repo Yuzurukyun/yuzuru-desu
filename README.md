@@ -27,6 +27,27 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
     - Another solution is to shut down or pause the bot on the server, and run it again once done testing or developing the bot locally
 - Docker is required to use fly.io
 
+## Bot Command Summary
+
+Run `y!<command>` in the Discord client and chose a command to run:
+
+-  **bank**
+    - Modify bank account of an RP participant.
+-  **check**
+    - Check a RP participant's character profile.
+-  **getbank**
+    - Get bank data of RP participants. Required before bot shutdown.
+-  **profile**
+    - Show your character profile in the RP.
+-  **reply**  
+    - Send a reply message to an RP participant.
+-  **search** 
+    - Send a message to the GMs based on where you are in the RP.
+
+Run `y!help` to see all the commands of the bot.
+
+Run `y!help <command>` to see help documentation for the specific command.
+
 ## Docker Deployment
 
 If you're on Windows, you need the Windows Pro version, at the minimum, to run Docker.
