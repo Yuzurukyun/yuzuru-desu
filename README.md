@@ -47,7 +47,7 @@ To check the container_id or container_name of the bot, create a new terminal wi
 - [Docker Hub](https://hub.docker.com/)
 
 ## fly.io
-The bot is being hosted for free with [fly.io](fly.io). The fly.toml needs to be configured without healthchecks 
+The bot is being hosted for free with [fly.io](https://fly.io/). The fly.toml needs to be configured without healthchecks 
 and without assigning ports to the bot application.
 
 The flyctl.exe is required when using fly.io. For Windows, the flyctl.exe should be placed in the same 
