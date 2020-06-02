@@ -27,6 +27,8 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
     - When testing or developing new bot features while the bot is running on the server it is recommended to use a different Discord bot token to prevent the repeated bot messages effect, and test the new bot on a different server
     - Another solution is to shut down or pause the bot on the server, and run it again once done testing or developing the bot locally
 - Docker is required to use fly.io
+- Whenever a new Python package is installed, run `pip freeze > requirements.txt` to update the requirements.txt file
+    - This file is needed for the Dockerfile
 
 ## Bot Command Summary
 
