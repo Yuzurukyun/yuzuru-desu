@@ -15,7 +15,7 @@ COPY --from=builder /install /
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
-# Needed for application to work with fly.io PaaS
+# Needed for application to work with fly.io BaaS
 EXPOSE 8080
 
 CMD /bin/bash -c "python main.py"
