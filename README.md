@@ -26,19 +26,19 @@ If you're on Windows, you need the Windows Pro version, at the minimum, to run D
 
 To build the Dockerfile for local testing, run:
 
-```> docker build -t yuzuru-desu/fly.io:v1 .```
+```docker build -t yuzuru-desu/fly.io:v1 .```
 
 To run the bot, run:
 
-```> docker run -d yuzuru-desu/fly.io:v1```
+```docker run -d yuzuru-desu/fly.io:v1```
 
 To shut down the bot, create a new terminal window and run:
 
-```> docker stop <container_id or container_name>```
+```docker stop <container_id or container_name>```
 
 To check the container_id or container_name of the bot, create a new terminal window and run:
 
-```> docker ps```
+```docker ps```
 
 ### Docker Documentation
 - [Official documentation](https://docs.docker.com/)
@@ -54,16 +54,19 @@ The flyctl.exe is required when using fly.io. For Windows, the flyctl.exe should
 
 To download flyctl.exe for Windows, run:
 
-```> curl -LO https://getfly.fly.dev/windows-x86-64/flyctl.exe```
+```curl -LO https://getfly.fly.dev/windows-x86-64/flyctl.exe```
 
 To login to fly.io, run:
-```> flyctl auth login```
+
+```flyctl auth login```
 
 To check current app deployement status, based on the fly.toml configuration, run:
-```> flyctl status```
+
+```flyctl status```
 
 To see the help documentation, run:
-```> flyctl --help```
+
+```flyctl --help```
 
 ### fly.io Documentation
 - [Official documentation](https://fly.io/docs/)
