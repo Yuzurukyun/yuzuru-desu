@@ -127,6 +127,6 @@ To see the help documentation, run:
 ## License
 
 This Discord bot is licensed under the AGPLv3 license. 
-In short, if you use a modified version of this Discord Bot, you *must* distribute its source licensed under the AGPLv3 as well, and notify your users where the modified source may be found.
+In short, if you use a modified version of Yuzuru Desu, you *must* distribute its source licensed under the AGPLv3 as well, and notify your users where the modified source may be found.
 
 See the [LICENSE](LICENSE.md) file for more information.
