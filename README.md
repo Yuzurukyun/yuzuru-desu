@@ -29,6 +29,8 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
 - Docker is required to use fly.io
 - Whenever a new Python package is installed, run `pip freeze > requirements.txt` to update the requirements.txt file
     - This file is needed for the Dockerfile
+- Whenever a new file is added to the repository that isn't needed for the program to run, add the filename to the .dockerignore file
+    - This is to save space on the Docker image produced by the Dockerfile 
 
 ## Bot Command Summary
 
