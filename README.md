@@ -8,7 +8,7 @@ sake of automation and education.
 This Discord bot is written in python using Discord's discord.py library. 
 It is used for a private Discord server to aid in online RP-based activities, where RP stands for role-play. 
 As of now, it can create and manage character data profiles for RP participants. 
-In addition, it provides commands that allow GM's to manage discord DM's for an RP more efficiently, where GM stands for game master, and DM stands for direct message.
+In addition, it provides commands that allow GMs to manage discord DMs for an RP more efficiently, where GM stands for game master, and DM stands for direct message.
 
 The bot is currently deployed on a server using [Docker](https://www.docker.com/) and [fly.io](https://fly.io/) BaaS (backend as a service).
 

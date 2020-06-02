@@ -255,7 +255,7 @@ async def getbank(ctx):
     Data is saved if the bot is shut down while running on a local machine.
     Implement an external database connection to save the data instead (not free so forget about it).
 
-    Restrictions: GM's only.
+    Restrictions: GMs only.
     Usages: y!getbank
     Aliases: gb, getb, gbank
     """
@@ -358,7 +358,7 @@ async def bank(ctx, user_target, amount: int):
     """
         Modify bank account of an RP participant.
 
-        Restrictions: GM's only.
+        Restrictions: GMs only.
         Users:
             Participant:
                 [Perkorn]
@@ -616,7 +616,7 @@ async def search(ctx, *args):  # pass all arguments as a list
 
     is_channel_char_found = False
 
-    # Command only works if message was a DM. GM's can bypass this restriction.
+    # Command only works if message was a DM. GMs can bypass this restriction.
     if ((ctx.guild is None)
             or (is_gm(ctx))):
 
