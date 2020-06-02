@@ -380,7 +380,7 @@ async def bank(ctx, user_target, amount: int):
         Examples:
             y!bank [Coffee] -10000
             y!bank [Perkorn] 999999
-        Aliases: b, bk
+   Aliases: b, bk
     """
     is_user_target_found = False
 
