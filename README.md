@@ -30,12 +30,20 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
     
 ## Environment Setup
 
+To install the Python package dependencies, run:
+
+```
+pip install -r requirements.txt
+```
+
 An .env file needs to be created in the root of this repository. 
 Do not track this file with git, as it will contain the Discord token of the bot, which should never be shared.
 
 Example .env:
 
-```DISCORD_TOKEN_YUZURU=<your discord token>```
+```
+DISCORD_TOKEN_YUZURU=<your discord token>
+```
 
 If testing the bot locally while another bot instance is running on a server, to prevent repeated messages, modify the bot to use the command syntax `dev!`, instead of `y!`.
 Note that repeated bot messages may still be sent by the bot running on the server when using the same command syntax for the local bot running.
@@ -44,11 +52,15 @@ This second solution would remove the need to switch between the command syntax 
 
 For `dev!`, this line should be active, and the `y!` commented out:
 
-```client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'), case_insensitive=True)```
+```
+client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'), case_insensitive=True)
+```
 
 For `y!`, this line should be active, and the `dev!` commented out:
 
-```client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'), case_insensitive=True)```
+```
+client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'), case_insensitive=True)
+```
 
 ## Bot Command Summary
 
@@ -77,19 +89,27 @@ If you're on Windows, you need the Windows Pro version, at the minimum, to run D
 
 To build the Dockerfile for local testing, run:
 
-```docker build -t yuzuru-desu/fly.io:v1 .```
+```
+docker build -t yuzuru-desu/fly.io:v1 .
+```
 
 To run the bot, run:
 
-```docker run -d yuzuru-desu/fly.io:v1```
+```
+docker run -d yuzuru-desu/fly.io:v1
+```
 
 To shut down the bot, create a new terminal window and run:
 
-```docker stop <container_id or container_name>```
+```
+docker stop <container_id or container_name>
+```
 
 To check the container_id or container_name of the bot, create a new terminal window and run:
 
-```docker ps```
+```
+docker ps
+```
 
 ### Docker Documentation
 
@@ -122,23 +142,33 @@ For Windows, the flyctl.exe should be placed in the same root directory as the r
 
 To download flyctl.exe for Windows, run:
 
-```curl -LO https://getfly.fly.dev/windows-x86-64/flyctl.exe```
+```
+curl -LO https://getfly.fly.dev/windows-x86-64/flyctl.exe
+```
 
 To login to fly.io, run:
 
-```flyctl auth login```
+```
+flyctl auth login
+```
 
 To check current app deployement status, based on the fly.toml configuration, run:
 
-```flyctl status```
+```
+flyctl status
+```
 
 To deploy your app, based on the fly.toml configuration, run:
 
-```flyctl deploy```
+```
+flyctl deploy
+```
 
 To see the help documentation, run:
 
-```flyctl --help```
+```
+flyctl --help
+```
 
 ### fly.io Documentation
 
