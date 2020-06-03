@@ -104,15 +104,15 @@ When testing the bot locally while no bot is running on the server.
 This is the default command syntax.
 """
 # The command bot command
-# client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'),
-#                       case_insensitive=True)
+client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'),
+                      case_insensitive=True)
 
 """
 When testing the bot locally while the bot is running on the server.
 """
 # The command bot command
-client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'),
-                      case_insensitive=True)
+# client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'),
+#                       case_insensitive=True)
 
 
 class Character:  # class name should be singular

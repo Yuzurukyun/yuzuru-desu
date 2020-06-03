@@ -53,13 +53,13 @@ Note that repeated bot messages may still be sent by the bot running on the serv
 Another solution is to shut down or pause the bot on the server, and run it again once done testing the bot locally.
 This second solution would remove the need to switch between the command syntax `dev!` and `y!`.
 
-For `dev!`, this line should be active, and the `y!` commented out:
+For `dev!`, this code line should be active, and the `y!` version of it commented out:
 
 ```
 client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'), case_insensitive=True)
 ```
 
-For `y!`, this line should be active, and the `dev!` commented out:
+For `y!`, this code line should be active, and the `dev!` version of it commented out:
 
 ```
 client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'), case_insensitive=True)
@@ -67,7 +67,7 @@ client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yu
 
 ## Bot Command Summary
 
-Run `y!<command>` in the Discord client and choose a command to run:
+Run `y!<command>` in the Discord client and choose a command to run.
 
 -  **bank**
     - Modify bank account of an RP participant
