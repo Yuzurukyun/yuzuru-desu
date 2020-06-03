@@ -18,7 +18,7 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
 - [discord.py](https://discordpy.readthedocs.io/en/latest/)
 - [How to create and invite a bot to a Discord server](https://discordpy.readthedocs.io/en/latest/discord.html)
 
-## Key Notes
+## Notes
 
 - The bot can be run locally using [Python 3.8](https://www.python.org/downloads/) or using Docker via the Dockerfile
 - [PyCharm](https://www.jetbrains.com/pycharm/) is the Python IDE being used by the core developers of this bot
@@ -29,6 +29,9 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
 - Whenever a new file is added to the repository that isn't needed for the program to run, add the filename to the .dockerignore file. This is to save space on the Docker image produced by the Dockerfile 
     
 ## Environment Setup
+
+It is recommended to use a virtual environment to install the required Python packages into.
+If you're using PyCharm, [setting up a virtual environment](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html) is rather simple.
 
 To install the Python package dependencies, run:
 
