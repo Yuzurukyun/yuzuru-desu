@@ -24,13 +24,31 @@ The bot is currently deployed on a server using [Docker](https://www.docker.com/
 - [PyCharm](https://www.jetbrains.com/pycharm/) is the Python IDE being used by the core developers of this bot
 - Run `y!getbank` before shutting down the bot to retrieve the character's money data. The money data is not persistent on the live version. This problem does not occur if running the bot locally
 - Only 1 bot needs to be deployed onto fly.io. Deploying more instances of the bot using the same Discord token will result in repeated bot messages for any `y!<command>` run on the Discord client
-    - When testing or developing new bot features while the bot is running on the server it is recommended to use a different Discord bot token to prevent the repeated bot messages effect, and test the new bot on a different server
-    - Another solution is to shut down or pause the bot on the server, and run it again once done testing or developing the bot locally
 - Docker is required to use fly.io
-- Whenever a new Python package is installed, run `pip freeze > requirements.txt` to update the requirements.txt file
-    - This file is needed for the Dockerfile
-- Whenever a new file is added to the repository that isn't needed for the program to run, add the filename to the .dockerignore file
-    - This is to save space on the Docker image produced by the Dockerfile 
+- Whenever a new Python package is installed, run `pip freeze > requirements.txt` to update the requirements.txt file. This file is needed for the Dockerfile
+- Whenever a new file is added to the repository that isn't needed for the program to run, add the filename to the .dockerignore file. This is to save space on the Docker image produced by the Dockerfile 
+    
+## Environment Setup
+
+An .env file needs to be created in the root of this repository. 
+Do not track this file with git, as it will contain the Discord token of the bot, which should never be shared.
+
+Example .env:
+
+```DISCORD_TOKEN_YUZURU=<your discord token>```
+
+If testing the bot locally while another bot instance is running on a server, to prevent repeated messages, modify the bot to use the command syntax `dev!`, instead of `y!`.
+Note that repeated bot messages may still be sent by the bot running on the server when using the same command syntax for the local bot running.
+Another solution is to shut down or pause the bot on the server, and run it again once done testing the bot locally.
+This second solution would remove the need to switch between the command syntax `dev!` and `y!`.
+
+For `dev!`, this line should be active, and the `y!` commented out:
+
+```client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'), case_insensitive=True)```
+
+For `y!`, this line should be active, and the `dev!` commented out:
+
+```client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yuzuru!', 'yus!', 'yuyu!'), case_insensitive=True)```
 
 ## Bot Command Summary
 
