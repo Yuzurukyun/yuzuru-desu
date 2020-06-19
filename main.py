@@ -74,13 +74,14 @@ PARTICIPANT_IDS = {
     '[DC]': 492590612969816095,
     '[Lyn]': 276101884555821057,
     '[Megumin]': 177100361729966082,
+    '[Mana]': 373781173203369987,
 }
 
 # other people to add to use the bot
 OTHER_IDS = {
     '[Jay]': 210143294972231681,
     '[Jovial]': 268074911619219456,
-    '[Salanto]': 200278357235990528
+    '[Salanto]': 200278357235990528,
 }
 
 # Dictionary for the list of all User IDs in the roleplay. IDs are required since a user may change their name.
@@ -153,6 +154,12 @@ CHARACTER_DATA = {
         'Suzuha Amane',
         'Small House (Section E)',
         CHARACTER_MONEY['[Jeremy]'],
+        'https://docs.google.com/document/d/143DsMShw7yLJgBhwejl0ASkVAC2BArUWHmRvOCXMRek/edit'
+    ),
+    '[Mana]': Character(
+        'Suzuha Amane',
+        'Small House (Section E)',
+        CHARACTER_MONEY['[Mana]'],
         'https://docs.google.com/document/d/143DsMShw7yLJgBhwejl0ASkVAC2BArUWHmRvOCXMRek/edit'
     ),
     '[Twice]': Character(
@@ -314,6 +321,7 @@ async def check(ctx, *args): # pass all arguments as a list
         Participant:
             [Perkorn]
             [Jeremy]
+            [Mana]
             [Twice]
             [Nookuon]
             [Lillie]
@@ -374,6 +382,7 @@ async def bank(ctx, user_target, amount: int):
             Participant:
                 [Perkorn]
                 [Jeremy]
+                [Mana]
                 [Twice]
                 [Nookuon]
                 [Lillie]
@@ -668,6 +677,7 @@ async def reply(ctx, *args):  # pass all arguments as a list
         Participant:
             [Perkorn]
             [Jeremy]
+            [Mana]
             [Twice]
             [Nookuon]
             [Lillie]
