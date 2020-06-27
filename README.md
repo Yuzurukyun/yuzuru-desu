@@ -164,7 +164,7 @@ flyctl status
 To deploy your app, based on the fly.toml configuration, run:
 
 ```
-flyctl deploy
+flyctl deploy --strategy immediate
 ```
 
 To see the help documentation, run:

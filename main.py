@@ -111,7 +111,7 @@ client = commands.Bot(command_prefix=commands.when_mentioned_or('yu!', 'y!', 'yu
 """
 When testing the bot locally while the bot is running on the server.
 """
-# The command bot command
+# # The command bot command
 # client = commands.Bot(command_prefix=commands.when_mentioned_or('dev!'),
 #                       case_insensitive=True)
 
