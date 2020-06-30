@@ -60,7 +60,7 @@ GM_IDS = {
 # Participant IDs who participated in the roleplay.
 PARTICIPANT_IDS = {
     '[Perkorn]': 217276956469755904,
-    '[Jeremy]': 293473817932726272,
+    '[Mana]': 373781173203369987,
     '[Twice]': 194385555125960705,
     '[Nookuon]': 218372116893007872,
     '[Lillie]': 692429269321777222,
@@ -70,11 +70,14 @@ PARTICIPANT_IDS = {
     '[Zocobo]': 366255501035569154,
     '[Clopel]': 327506772422164480,
     '[Riam]': 363795030365700097,
-    '[Skrubby]': 212241751383998477,
     '[DC]': 492590612969816095,
     '[Lyn]': 276101884555821057,
     '[Megumin]': 177100361729966082,
-    '[Mana]': 373781173203369987,
+    '[Shady]': 721496867627860080,
+
+    # dropped participants
+    '[Jeremy]': 293473817932726272,
+    '[Skrubby]': 212241751383998477,
 }
 
 # other people to add to use the bot
@@ -82,6 +85,7 @@ OTHER_IDS = {
     '[Jay]': 210143294972231681,
     '[Jovial]': 268074911619219456,
     '[Salanto]': 200278357235990528,
+    '[Munz]': 339542438081331203,
 }
 
 # Dictionary for the list of all User IDs in the roleplay. IDs are required since a user may change their name.
@@ -150,12 +154,6 @@ CHARACTER_DATA = {
         CHARACTER_MONEY['[Perkorn]'],
         'https://docs.google.com/document/d/1MOkA6N3YUsT2_DmnY0NzRnHA0p-EbtS9Oo9ToeTqJFQ/edit'
     ),
-    '[Jeremy]': Character(
-        'Suzuha Amane',
-        'Small House (Section E)',
-        CHARACTER_MONEY['[Jeremy]'],
-        'https://docs.google.com/document/d/143DsMShw7yLJgBhwejl0ASkVAC2BArUWHmRvOCXMRek/edit'
-    ),
     '[Mana]': Character(
         'Suzuha Amane',
         'Small House (Section E)',
@@ -216,10 +214,10 @@ CHARACTER_DATA = {
         CHARACTER_MONEY['[Riam]'],
         'https://docs.google.com/document/d/1ZYGjAj_HNY-w7fEuXkM83sxUd5W_-tFfA74M3ysIlfc/edit'
     ),
-    '[Skrubby]': Character(
+    '[Shady]': Character(
         'Syobai Hashimoto',
         'Condo Room 1 (Shop: Shopping Complex Entrance)',
-        CHARACTER_MONEY['[Skrubby]'],
+        CHARACTER_MONEY['[Shady]'],
         'https://docs.google.com/document/d/1znpFpaZmfvq0k1JNUtjOTBE8pWFQ9ylnoieUNXXYS7E/edit'
     ),
     '[DC]': Character(
@@ -331,7 +329,7 @@ async def check(ctx, *args): # pass all arguments as a list
             [Zocobo]
             [Clopel]
             [Riam]
-            [Skrubby]
+            [Shady]
             [DC]
             [Lyn]
             [Megumin]
@@ -392,7 +390,7 @@ async def bank(ctx, user_target, amount: int):
                 [Zocobo]
                 [Clopel]
                 [Riam]
-                [Skrubby]
+                [Shady]
                 [DC]
                 [Lyn]
                 [Megumin]
@@ -533,12 +531,16 @@ async def on_message(message):
         await message.channel.send('The higher order shall reign.')
 
     # e
-    if message.content.lower().startswith(f'e'):
+    if message.content.lower().startswith(f'e') and message.author.id != OTHER_IDS["[Munz]"]:
         await message.channel.send('e')
+    elif message.author.id == OTHER_IDS["[Munz]"]:
+        await message.channel.send("You are not a clown. You are the entire circus.")
 
     # h
-    if message.content.lower().startswith(f'h'):
+    if message.content.lower().startswith(f'h') and message.author.id != OTHER_IDS["[Munz]"]:
         await message.channel.send('h')
+    elif message.author.id == OTHER_IDS["[Munz]"]:
+        await message.channel.send("You are not a clown. You are the entire circus.")
 
     # Prevents it from clashing with commands.
     await client.process_commands(message)
@@ -687,7 +689,7 @@ async def reply(ctx, *args):  # pass all arguments as a list
             [Zocobo]
             [Clopel]
             [Riam]
-            [Skrubby]
+            [Shady]
             [DC]
             [Lyn]
             [Megumin]
