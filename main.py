@@ -533,13 +533,13 @@ async def on_message(message):
     # e
     if message.content.lower().startswith(f'e') and message.author.id != OTHER_IDS["[Munz]"]:
         await message.channel.send('e')
-    elif message.author.id == OTHER_IDS["[Munz]"]:
+    elif message.content.lower().startswith(f'e') and message.author.id == OTHER_IDS["[Munz]"]:
         await message.channel.send("You are not a clown. You are the entire circus.")
 
     # h
     if message.content.lower().startswith(f'h') and message.author.id != OTHER_IDS["[Munz]"]:
         await message.channel.send('h')
-    elif message.author.id == OTHER_IDS["[Munz]"]:
+    elif message.content.lower().startswith(f'h') and message.author.id == OTHER_IDS["[Munz]"]:
         await message.channel.send("You are not a clown. You are the entire circus.")
 
     # Prevents it from clashing with commands.
