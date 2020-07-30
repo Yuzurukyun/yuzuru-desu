@@ -143,10 +143,10 @@ flyctl is a command line program.
 flyctl.exe is required when using fly.io. 
 For Windows, the flyctl.exe should be placed in the same root directory as the repository.
 
-To download flyctl.exe for Windows, run:
+To download flyctl.exe for Windows, run in Windows Powershell:
 
 ```
-curl -LO https://getfly.fly.dev/windows-x86-64/flyctl.exe
+iwr https://fly.io/install.ps1 -| iex
 ```
 
 To login to fly.io, run:
